@@ -29,10 +29,11 @@ class _ShaderSourceViewerState extends State<ShaderSourceViewer> {
   Future<void> _loadShaderSource() async {
     try {
       // Convert shader path to asset path
-      // e.g., 'shaders/crt_shader.frag' -> 'assets/shaders/crt_shader.frag'
+      // e.g., 'shaders/crt_shader.frag' -> 'assets/shaders_text/crt_shader.frag'
       String assetPath = widget.assetKey;
       if (assetPath.startsWith('shaders/')) {
-        assetPath = 'assets/$assetPath';
+        final basename = assetPath.split('/').last;
+        assetPath = 'assets/shaders_text/$basename';
       }
       
       final source = await rootBundle.loadString(assetPath);
@@ -116,6 +117,7 @@ class _ShaderSourceViewerState extends State<ShaderSourceViewer> {
                           _sourceCode!,
                           style: const TextStyle(
                             fontFamily: 'Roboto Mono',
+                            fontFamilyFallback: <String>["Courier"],
                             fontSize: 12,
                             color: Colors.green,
                           ),

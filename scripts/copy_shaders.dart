@@ -3,13 +3,13 @@
 import 'dart:io';
 import 'dart:async';
 
-/// Script to copy shader files from shaders/ directory to assets/shaders/
+/// Script to copy shader files from shaders/ directory to assets/shaders_text/
 /// This allows the shader source code to be viewed in the app
 Future<void> main() async {
   print('🔧 Copying shader files to assets directory...');
   
   final shaderDir = Directory('shaders');
-  final assetsShaderDir = Directory('assets/shaders');
+  final assetsShaderDir = Directory('assets/shaders_text');
   
   // Ensure assets/shaders directory exists
   if (!await assetsShaderDir.exists()) {
@@ -32,10 +32,10 @@ Future<void> main() async {
   // Copy each shader file to assets/shaders
   for (final shaderFile in shaderFiles) {
     final fileName = shaderFile.path.split('/').last;
-    final targetFile = File('assets/shaders/$fileName');
-    
+    final targetFile = File('assets/shaders_text/$fileName');
+
     await shaderFile.copy(targetFile.path);
-    print('✅ Copied $fileName to assets/shaders/');
+    print('✅ Copied $fileName to assets/shaders_text/');
   }
   
   print('🎉 Successfully copied ${shaderFiles.length} shader files!');

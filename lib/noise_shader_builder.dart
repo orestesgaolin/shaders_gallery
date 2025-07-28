@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_shaders/flutter_shaders.dart';
 import 'dart:ui';
 import 'shader_builder.dart';
 

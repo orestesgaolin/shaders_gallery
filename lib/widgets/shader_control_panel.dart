@@ -3,17 +3,14 @@ import 'package:shaders/shader_source_viewer.dart';
 import '../main.dart';
 
 /// A tabbed panel that displays shader controls and source code.
-/// 
+///
 /// This widget provides two tabs:
 /// - Controls: Custom shader-specific controls built by the shader builder
 /// - Source: The shader source code with syntax highlighting and copy functionality
 class ShaderControlPanel extends StatelessWidget {
   final ShaderInfo shaderInfo;
 
-  const ShaderControlPanel({
-    super.key,
-    required this.shaderInfo,
-  });
+  const ShaderControlPanel({super.key, required this.shaderInfo});
 
   @override
   Widget build(BuildContext context) {
@@ -34,14 +31,14 @@ class ShaderControlPanel extends StatelessWidget {
                   padding: const EdgeInsets.all(16),
                   child: shaderInfo.builder.buildControls(context),
                 ),
-                SizedBox()
-                // Padding(
-                //   padding: const EdgeInsets.all(16),
-                //   child: ShaderSourceViewer(
-                //     assetKey: shaderInfo.assetKey,
-                //     shaderName: shaderInfo.name,
-                //   ),
-                // ),
+
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: ShaderSourceViewer(
+                    assetKey: shaderInfo.assetKey,
+                    shaderName: shaderInfo.name,
+                  ),
+                ),
               ],
             ),
           ),

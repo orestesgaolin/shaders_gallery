@@ -34,6 +34,9 @@ jobs:
     - name: Get dependencies
       run: flutter pub get
 
+    - name: Copy shaders to assets
+      run: dart scripts/copy_shaders.dart
+
     - name: Build web
       run: flutter build web --release --base-href /shaders_gallery/
 
