@@ -1,0 +1,16 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Copy Shaders to Assets",
+			"type": "shell",
+			"command": "dart",
+			"args": [
+				"scripts/copy_shaders.dart"
+			],
+			"group": "build",
+			"problemMatcher": [],
+			"isBackground": false
+		}
+	]
+}
