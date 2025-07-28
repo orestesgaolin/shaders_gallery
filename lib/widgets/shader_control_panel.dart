@@ -34,13 +34,14 @@ class ShaderControlPanel extends StatelessWidget {
                   padding: const EdgeInsets.all(16),
                   child: shaderInfo.builder.buildControls(context),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: ShaderSourceViewer(
-                    assetKey: shaderInfo.assetKey,
-                    shaderName: shaderInfo.name,
-                  ),
-                ),
+                SizedBox()
+                // Padding(
+                //   padding: const EdgeInsets.all(16),
+                //   child: ShaderSourceViewer(
+                //     assetKey: shaderInfo.assetKey,
+                //     shaderName: shaderInfo.name,
+                //   ),
+                // ),
               ],
             ),
           ),

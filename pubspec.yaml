@@ -16,6 +16,7 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   cupertino_icons: ^1.0.8
   url_launcher: ^6.3.2
+  path: ^1.9.1
 
 dev_dependencies:
   flutter_test:
@@ -29,6 +30,9 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+
+  assets:
+    - assets/shaders/
 
   shaders:
     - shaders/crt_shader.frag

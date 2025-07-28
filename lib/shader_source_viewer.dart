@@ -28,14 +28,32 @@ class _ShaderSourceViewerState extends State<ShaderSourceViewer> {
 
   Future<void> _loadShaderSource() async {
     try {
-      final source = await rootBundle.loadString(widget.assetKey);
+      // Convert shader path to asset path
+      // e.g., 'shaders/crt_shader.frag' -> 'assets/shaders/crt_shader.frag'
+      String assetPath = widget.assetKey;
+      if (assetPath.startsWith('shaders/')) {
+        assetPath = 'assets/$assetPath';
+      }
+      
+      final source = await rootBundle.loadString(assetPath);
       setState(() {
         _sourceCode = source;
         _isLoading = false;
       });
     } catch (e) {
+      // Handle loading errors
+      String errorMessage;
+
+      if (e is FormatException) {
+        errorMessage =
+            'Shader file appears to be in binary format. Asset transformation may not be working correctly.';
+      } else {
+        errorMessage =
+            'Failed to load shader source: $e\n\nEnsure shader files are copied to assets directory. Run: dart scripts/copy_shaders.dart';
+      }
+
       setState(() {
-        _error = 'Failed to load shader source: $e';
+        _error = errorMessage;
         _isLoading = false;
       });
     }
@@ -79,31 +97,31 @@ class _ShaderSourceViewerState extends State<ShaderSourceViewer> {
               child: _isLoading
                   ? const Center(child: CircularProgressIndicator())
                   : _error != null
-                      ? Center(
-                          child: Text(
-                            _error!,
-                            style: TextStyle(color: Colors.red[400]),
-                          ),
-                        )
-                      : Container(
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            color: Colors.grey[900],
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: Colors.grey[700]!),
-                          ),
-                          child: SingleChildScrollView(
-                            padding: const EdgeInsets.all(12),
-                            child: SelectableText(
-                              _sourceCode!,
-                              style: const TextStyle(
-                                fontFamily: 'monospace',
-                                fontSize: 12,
-                                color: Colors.green,
-                              ),
-                            ),
+                  ? Center(
+                      child: Text(
+                        _error!,
+                        style: TextStyle(color: Colors.red[400]),
+                      ),
+                    )
+                  : Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[900],
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.grey[700]!),
+                      ),
+                      child: SingleChildScrollView(
+                        padding: const EdgeInsets.all(12),
+                        child: SelectableText(
+                          _sourceCode!,
+                          style: const TextStyle(
+                            fontFamily: 'Roboto Mono',
+                            fontSize: 12,
+                            color: Colors.green,
                           ),
                         ),
+                      ),
+                    ),
             ),
           ],
         ),
