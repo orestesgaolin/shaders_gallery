@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -80,6 +81,22 @@ final shaders = [
   ),
 ];
 
+// Custom page transition builder that provides no animation (instant transition)
+class _NoTransitionPageTransitionsBuilder extends PageTransitionsBuilder {
+  const _NoTransitionPageTransitionsBuilder();
+
+  @override
+  Widget buildTransitions<T extends Object?>(
+    PageRoute<T> route,
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
+    return child;
+  }
+}
+
 class RgbGlitchDemo extends StatefulWidget {
   const RgbGlitchDemo({super.key});
 
@@ -92,7 +109,19 @@ class _RgbGlitchDemoState extends State<RgbGlitchDemo> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData.dark(useMaterial3: true),
+      theme: ThemeData.dark(useMaterial3: true).copyWith(
+        pageTransitionsTheme: kIsWeb 
+          ? PageTransitionsTheme(
+              builders: {
+                TargetPlatform.android: const _NoTransitionPageTransitionsBuilder(),
+                TargetPlatform.iOS: const _NoTransitionPageTransitionsBuilder(),
+                TargetPlatform.linux: const _NoTransitionPageTransitionsBuilder(),
+                TargetPlatform.macOS: const _NoTransitionPageTransitionsBuilder(),
+                TargetPlatform.windows: const _NoTransitionPageTransitionsBuilder(),
+              },
+            )
+          : null,
+      ),
       home: const HomeScreen(),
     );
   }
