@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'crt_shader_config.dart';
-import 'noise_overlay_shader_config.dart';
-import 'noise_shader_config.dart';
-import 'ntsc_shader_config.dart';
-import 'shader_configs.dart';
+import 'shader_builder.dart';
+import 'crt_shader_builder.dart';
+import 'noise_overlay_shader_builder.dart';
+import 'noise_shader_builder.dart';
+import 'ntsc_shader_builder.dart';
 import 'shader_screen.dart';
 import 'tv_test_screen.dart';
 
@@ -18,45 +18,65 @@ class ShaderInfo {
   final String assetKey;
   final String description;
   final String sourceUrl;
-  final ShaderConfig config;
+  final String author;
+  final DateTime dateAdded;
+  final CustomShaderBuilder builder;
 
   const ShaderInfo({
     required this.name,
     required this.assetKey,
     required this.description,
     required this.sourceUrl,
-    required this.config,
+    required this.author,
+    required this.dateAdded,
+    required this.builder,
   });
+
+  ShaderMetadata get metadata => ShaderMetadata(
+    assetKey: assetKey,
+    name: name,
+    url: sourceUrl,
+    author: author,
+    dateAdded: dateAdded,
+  );
 }
 
 final shaders = [
-  const ShaderInfo(
+  ShaderInfo(
     name: 'NTSC',
     assetKey: 'shaders/ntsc_shader.frag',
     description: 'An effect that emulates an old NTSC television signal.',
     sourceUrl: 'https://www.shadertoy.com/view/3tVBWR',
-    config: NtscShaderConfig(),
+    author: 'Shadertoy Community',
+    dateAdded: DateTime(2024, 1, 15),
+    builder: const NtscShaderBuilder(),
   ),
-  const ShaderInfo(
+  ShaderInfo(
     name: 'CRT',
     assetKey: 'shaders/crt_shader.frag',
     description: 'A glitching screen effect',
     sourceUrl: 'https://www.shadertoy.com/view/lt3yz7',
-    config: CrtShaderConfig(),
+    author: '@tommclaughlan',
+    dateAdded: DateTime(2024, 1, 20),
+    builder: const CrtShaderBuilder(),
   ),
-  const ShaderInfo(
+  ShaderInfo(
     name: 'Noise',
     assetKey: 'shaders/noise_shader.frag',
     description: 'Animated gradient noise with film grain effect',
     sourceUrl: 'https://www.shadertoy.com/view/DdcfzH',
-    config: NoiseShaderConfig(),
+    author: 'Shadertoy Community',
+    dateAdded: DateTime(2024, 2, 1),
+    builder: const NoiseShaderBuilder(),
   ),
-  const ShaderInfo(
+  ShaderInfo(
     name: 'Noise Overlay',
     assetKey: 'shaders/noise_overlay_shader.frag',
     description: 'Applies animated noise effect as an overlay on content',
     sourceUrl: 'https://www.shadertoy.com/view/DdcfzH',
-    config: NoiseOverlayShaderConfig(),
+    author: 'Shadertoy Community',
+    dateAdded: DateTime(2024, 2, 5),
+    builder: const NoiseOverlayShaderBuilder(),
   ),
 ];
 
