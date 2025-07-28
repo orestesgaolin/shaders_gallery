@@ -12,9 +12,7 @@ class TvTestScreen extends StatelessWidget {
         decoration: BoxDecoration(
           border: Border.all(color: Colors.black, width: 2),
         ),
-        child: const CustomPaint(
-          painter: TvTestScreenPainter(),
-        ),
+        child: const CustomPaint(painter: TvTestScreenPainter()),
       ),
     );
   }
@@ -103,19 +101,25 @@ class TvTestScreenPainter extends CustomPainter {
       ..strokeWidth = 1;
 
     final spacing = 8.0;
-    
+
     // Horizontal lines
     for (double i = y; i <= y + h; i += spacing) {
       canvas.drawLine(Offset(x, i), Offset(x + w, i), paint);
     }
-    
+
     // Vertical lines
     for (double i = x; i <= x + w; i += spacing) {
       canvas.drawLine(Offset(i, y), Offset(i, y + h), paint);
     }
   }
 
-  void _drawVerticalLines(Canvas canvas, double x, double y, double w, double h) {
+  void _drawVerticalLines(
+    Canvas canvas,
+    double x,
+    double y,
+    double w,
+    double h,
+  ) {
     final paint = Paint()
       ..color = Colors.black
       ..strokeWidth = 1;
@@ -137,10 +141,10 @@ class TvTestScreenPainter extends CustomPainter {
     for (int i = 0; i < frequencies.length; i++) {
       final freq = frequencies[i];
       final paint = Paint()..color = Colors.black;
-      
+
       final x = i * barWidth;
       final lineSpacing = barWidth / (freq * 2);
-      
+
       for (double j = 0; j < barWidth; j += lineSpacing * 2) {
         canvas.drawRect(
           Rect.fromLTWH(x + j, startY, lineSpacing, sectionHeight),
@@ -167,7 +171,7 @@ class TvTestScreenPainter extends CustomPainter {
     for (final pos in positions) {
       // Outer circle
       canvas.drawCircle(pos, radius, paint);
-      
+
       // Inner crosshair
       canvas.drawLine(
         Offset(pos.dx - radius * 0.7, pos.dy),
@@ -179,7 +183,7 @@ class TvTestScreenPainter extends CustomPainter {
         Offset(pos.dx, pos.dy + radius * 0.7),
         paint,
       );
-      
+
       // Center dot
       canvas.drawCircle(pos, 3, Paint()..color = Colors.black);
     }
@@ -191,12 +195,12 @@ class TvTestScreenPainter extends CustomPainter {
       ..strokeWidth = 0.5;
 
     const gridSpacing = 20.0;
-    
+
     // Vertical lines
     for (double x = 0; x <= width; x += gridSpacing) {
       canvas.drawLine(Offset(x, 0), Offset(x, height), paint);
     }
-    
+
     // Horizontal lines
     for (double y = 0; y <= height; y += gridSpacing) {
       canvas.drawLine(Offset(0, y), Offset(width, y), paint);

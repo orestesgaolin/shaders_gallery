@@ -5,10 +5,7 @@ import 'package:shaders/tv_test_screen.dart';
 import 'main.dart';
 
 class ShaderScreen extends StatefulWidget {
-  const ShaderScreen({
-    super.key,
-    required this.shaderInfo,
-  });
+  const ShaderScreen({super.key, required this.shaderInfo});
 
   final ShaderInfo shaderInfo;
 
@@ -23,13 +20,26 @@ class _ShaderScreenState extends State<ShaderScreen>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1800),
-    );
-    _controller
-      ..forward()
-      ..repeat(reverse: true);
+    final duration = widget.shaderInfo.config.animationDuration;
+
+    if (duration != null) {
+      // Bounded animation
+      _controller = AnimationController(vsync: this, duration: duration);
+      _controller
+        ..forward()
+        ..repeat(reverse: true);
+    } else {
+      // Unbounded animation - use a long duration and repeat without reverse
+      _controller = AnimationController(
+        vsync: this,
+        duration: const Duration(
+          seconds: 3600,
+        ), // 1 hour cycle for continuous time
+      );
+      _controller
+        ..forward()
+        ..repeat();
+    }
   }
 
   @override
@@ -43,47 +53,59 @@ class _ShaderScreenState extends State<ShaderScreen>
     final shaderView = AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
-        return ShaderBuilder(
-          assetKey: widget.shaderInfo.assetKey,
-          (context, shader, _) {
-            return AnimatedSampler(
-              (image, size, canvas) {
-                final animation = TweenSequence<double>([
-                  TweenSequenceItem(
-                    tween: Tween<double>(begin: 0.0, end: 1.0)
-                        .chain(CurveTween(curve: Curves.easeInOut)),
-                    weight: 50.0,
-                  ),
-                  TweenSequenceItem(
-                    tween: Tween<double>(begin: 1.0, end: 0.0)
-                        .chain(CurveTween(curve: Curves.easeInOut)),
-                    weight: 50.0,
-                  ),
-                ]).animate(_controller);
-                widget.shaderInfo.config
-                    .setUniforms(shader, size, animation.value);
-                shader.setImageSampler(0, image);
+        return ShaderBuilder(assetKey: widget.shaderInfo.assetKey, (
+          context,
+          shader,
+          _,
+        ) {
+          return AnimatedSampler((image, size, canvas) {
+            final duration = widget.shaderInfo.config.animationDuration;
+            double timeValue;
 
-                canvas.drawRect(
-                  Rect.fromLTWH(0, 0, size.width, size.height),
-                  Paint()..shader = shader,
-                );
-              },
-              child: child!,
+            if (duration != null) {
+              // Bounded animation - use animated value between 0-1
+              final animation = TweenSequence<double>([
+                TweenSequenceItem(
+                  tween: Tween<double>(
+                    begin: 0.0,
+                    end: 1.0,
+                  ).chain(CurveTween(curve: Curves.easeInOut)),
+                  weight: 50.0,
+                ),
+                TweenSequenceItem(
+                  tween: Tween<double>(
+                    begin: 1.0,
+                    end: 0.0,
+                  ).chain(CurveTween(curve: Curves.easeInOut)),
+                  weight: 50.0,
+                ),
+              ]).animate(_controller);
+              timeValue = animation.value;
+            } else {
+              // Unbounded animation - use controller value as continuous time
+              // Scale the 0-1 controller value to actual time in seconds
+              timeValue = _controller.value * _controller.duration!.inSeconds;
+            }
+
+            widget.shaderInfo.config.setUniforms(shader, size, timeValue);
+
+            // Only set image sampler if the shader requires it
+            if (widget.shaderInfo.config.requiresImageSampler) {
+              shader.setImageSampler(0, image);
+            }
+
+            canvas.drawRect(
+              Rect.fromLTWH(0, 0, size.width, size.height),
+              Paint()..shader = shader,
             );
-          },
-        );
+          }, child: child!);
+        });
       },
-      child: const Center(
-        child: TvTestScreen(),
-      ),
+      child: const Center(child: TvTestScreen()),
     );
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.shaderInfo.name),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: Text(widget.shaderInfo.name), centerTitle: true),
       body: shaderView,
     );
   }

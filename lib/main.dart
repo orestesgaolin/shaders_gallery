@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_shaders/flutter_shaders.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'crt_shader_config.dart';
+import 'noise_overlay_shader_config.dart';
+import 'noise_shader_config.dart';
 import 'ntsc_shader_config.dart';
 import 'shader_configs.dart';
 import 'shader_screen.dart';
@@ -43,6 +44,20 @@ final shaders = [
     sourceUrl: 'https://www.shadertoy.com/view/lt3yz7',
     config: CrtShaderConfig(),
   ),
+  const ShaderInfo(
+    name: 'Noise',
+    assetKey: 'shaders/noise_shader.frag',
+    description: 'Animated gradient noise with film grain effect',
+    sourceUrl: 'https://www.shadertoy.com/view/DdcfzH',
+    config: NoiseShaderConfig(),
+  ),
+  const ShaderInfo(
+    name: 'Noise Overlay',
+    assetKey: 'shaders/noise_overlay_shader.frag',
+    description: 'Applies animated noise effect as an overlay on content',
+    sourceUrl: 'https://www.shadertoy.com/view/DdcfzH',
+    config: NoiseOverlayShaderConfig(),
+  ),
 ];
 
 class RgbGlitchDemo extends StatefulWidget {
@@ -69,35 +84,35 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Shader Gallery'),
-        centerTitle: true,
+      appBar: AppBar(title: const Text('Shader Gallery'), centerTitle: true),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return GridView.builder(
+            padding: const EdgeInsets.all(16),
+            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+              maxCrossAxisExtent: 350,
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 16,
+              childAspectRatio: 4 / 3,
+            ),
+            itemCount: shaders.length,
+            itemBuilder: (context, index) {
+              final shaderInfo = shaders[index];
+              return _ShaderTile(
+                shaderInfo: shaderInfo,
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          ShaderScreen(shaderInfo: shaderInfo),
+                    ),
+                  );
+                },
+              );
+            },
+          );
+        },
       ),
-      body: LayoutBuilder(builder: (context, constraints) {
-        return GridView.builder(
-          padding: const EdgeInsets.all(16),
-          gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-            maxCrossAxisExtent: 350,
-            crossAxisSpacing: 16,
-            mainAxisSpacing: 16,
-            childAspectRatio: 4/3,
-          ),
-          itemCount: shaders.length,
-          itemBuilder: (context, index) {
-            final shaderInfo = shaders[index];
-            return _ShaderTile(
-              shaderInfo: shaderInfo,
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => ShaderScreen(shaderInfo: shaderInfo),
-                  ),
-                );
-              },
-            );
-          },
-        );
-      }),
     );
   }
 }
