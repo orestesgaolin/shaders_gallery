@@ -4,16 +4,13 @@ import 'shader_control_panel.dart';
 import '../main.dart';
 
 /// A responsive layout that adapts the shader view based on screen size.
-/// 
+///
 /// On wide screens (>800px), displays the shader animation and controls side by side.
 /// On narrow screens, stacks them vertically with the animation on top.
 class ResponsiveShaderLayout extends StatelessWidget {
   final ShaderInfo shaderInfo;
 
-  const ResponsiveShaderLayout({
-    super.key,
-    required this.shaderInfo,
-  });
+  const ResponsiveShaderLayout({super.key, required this.shaderInfo});
 
   @override
   Widget build(BuildContext context) {
@@ -40,15 +37,9 @@ class _WideScreenLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Expanded(
-          flex: 1,
-          child: ShaderAnimationView(shaderInfo: shaderInfo),
-        ),
+        Expanded(flex: 1, child: ShaderAnimationView(shaderInfo: shaderInfo)),
         const VerticalDivider(width: 1),
-        Expanded(
-          flex: 1,
-          child: ShaderControlPanel(shaderInfo: shaderInfo),
-        ),
+        Expanded(flex: 1, child: ShaderControlPanel(shaderInfo: shaderInfo)),
       ],
     );
   }
@@ -61,18 +52,27 @@ class _NarrowScreenLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(
-          flex: 2,
-          child: ShaderAnimationView(shaderInfo: shaderInfo),
-        ),
-        const Divider(height: 1),
-        Expanded(
-          flex: 1,
-          child: ShaderControlPanel(shaderInfo: shaderInfo),
-        ),
-      ],
+    final screenHeight = MediaQuery.of(context).size.height;
+    final shaderViewHeight =
+        screenHeight * 0.4; // 40% of screen height for shader view
+    final controlPanelHeight =
+        screenHeight * 0.6; // 60% of screen height for controls
+
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          SizedBox(
+            height: shaderViewHeight,
+            child: ShaderAnimationView(shaderInfo: shaderInfo),
+          ),
+          const Divider(height: 1),
+          // Provide a fixed height for the control panel to satisfy Expanded constraints
+          SizedBox(
+            height: controlPanelHeight,
+            child: ShaderControlPanel(shaderInfo: shaderInfo),
+          ),
+        ],
+      ),
     );
   }
 }
