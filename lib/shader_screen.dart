@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shaders/widgets/details_top_menu.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'widgets/widgets.dart';
 import 'main.dart';
@@ -18,13 +19,16 @@ class ShaderScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          // Top menu (same as home screen)
-          _buildTopMenu(context),
-          // Main content
-          Expanded(child: _buildMainContent(context)),
-        ],
+      body: SafeArea(
+        bottom: false,
+        child: Column(
+          children: [
+            // Top menu (same as home screen)
+            _buildTopMenu(context),
+            // Main content
+            Expanded(child: _buildMainContent(context)),
+          ],
+        ),
       ),
     );
   }
@@ -40,51 +44,7 @@ class ShaderScreen extends StatelessWidget {
           ),
         ),
       ),
-      child: Row(
-        children: [
-          // Back to home button
-          ShadButton(
-            onPressed: () => context.go('/'),
-            child: const Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.arrow_back, size: 20),
-                SizedBox(width: 8),
-                Text('Back to Gallery'),
-              ],
-            ),
-          ),
-          const SizedBox(width: 16),
-          // Shader title
-          Expanded(
-            child: Text(
-              shaderInfo.name,
-              style: ShadTheme.of(context).textTheme.h3,
-            ),
-          ),
-          // Actions
-          Row(
-            children: [
-              ShadButton.outline(
-                onPressed: () async {
-                  final url = Uri.parse(shaderInfo.sourceUrl);
-                  if (await canLaunchUrl(url)) {
-                    await launchUrl(url);
-                  }
-                },
-                child: const Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.link, size: 16),
-                    SizedBox(width: 8),
-                    Text('View Source'),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
+      child: DetailsTopMenu(shaderInfo: shaderInfo),
     );
   }
 
@@ -108,17 +68,26 @@ class ShaderScreen extends StatelessWidget {
             ],
           );
         } else {
-          return Column(
+          return ListView(
             children: [
-              // Shader view (top half)
-              Expanded(child: ShaderAnimationView(shaderInfo: shaderInfo)),
+              ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxHeight: constraints.maxHeight * 0.6,
+                ),
+                child: ShaderAnimationView(shaderInfo: shaderInfo),
+              ),
               // Horizontal divider
               Container(
                 height: 1,
                 color: ShadTheme.of(context).colorScheme.border,
               ),
               // Source code view (bottom half)
-              Expanded(child: RightColumn(shaderInfo: shaderInfo)),
+              ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxHeight: 1200,
+                ),
+                child: RightColumn(shaderInfo: shaderInfo),
+              ),
             ],
           );
         }

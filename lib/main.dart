@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:shaders/widgets/widgets.dart';
 
 import 'shader_builder.dart';
 import 'crt_shader_builder.dart';
 import 'noise_overlay_shader_builder.dart';
 import 'noise_shader_builder.dart';
 import 'ntsc_shader_builder.dart';
+import 'rings_shader_builder.dart';
 import 'shader_screen.dart';
 
 void main() {
@@ -87,6 +89,16 @@ final shaders = [
     author: 'welches',
     dateAdded: DateTime(2025, 7, 28),
     builder: const NoiseOverlayShaderBuilder(),
+  ),
+  ShaderInfo(
+    name: 'Interactive Rings',
+    assetKey: 'shaders/rings_shader.frag',
+    description: 'Animated rings that respond to touch and mouse interaction. Tap and move around quickly.',
+    sourceUrl: 'https://www.shadertoy.com/view/Xtj3DW',
+    author: 'Pol Jeremias',
+    dateAdded: DateTime(2025, 7, 29),
+    builder: const RingsShaderBuilder(),
+    path: 'rings-shader',
   ),
 ];
 
@@ -195,11 +207,14 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          const TopMenu(),
-          Expanded(child: ContentGrid()),
-        ],
+      body: SafeArea(
+        bottom: false,
+        child: Column(
+          children: [
+            const TopMenu(),
+            Expanded(child: ContentGrid()),
+          ],
+        ),
       ),
     );
   }
@@ -244,42 +259,6 @@ class ContentGrid extends StatelessWidget {
           },
         );
       },
-    );
-  }
-}
-
-class TopMenu extends StatelessWidget {
-  const TopMenu({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: ShadTheme.of(context).colorScheme.border,
-            width: 1,
-          ),
-        ),
-      ),
-      child: Row(
-        children: [
-          // Home button
-          ShadButton(
-            onPressed: () => context.go('/'),
-            child: const Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.home, size: 20),
-                SizedBox(width: 8),
-                Text('Shader Gallery'),
-              ],
-            ),
-          ),
-          const Spacer(),
-        ],
-      ),
     );
   }
 }
