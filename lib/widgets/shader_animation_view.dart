@@ -97,7 +97,7 @@ class _ShaderAnimationViewState extends State<ShaderAnimationView>
                   shader,
                   size.biggest,
                   timeValue,
-                  const Center(child: TvTestScreen()),
+                  widget.shaderInfo.builder.childBuilder(context),
                 );
               },
             );

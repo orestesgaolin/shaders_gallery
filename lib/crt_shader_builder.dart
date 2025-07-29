@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_shaders/flutter_shaders.dart';
+import 'package:shaders/tv_test_screen.dart';
 import 'dart:ui';
 import 'shader_builder.dart';
 
@@ -31,5 +32,10 @@ class CrtShaderBuilder extends CustomShaderBuilder {
         Paint()..shader = shader,
       );
     }, child: child ?? const SizedBox());
+  }
+
+  @override
+  Widget? childBuilder(BuildContext context) {
+    return const Center(child: TvTestScreen());
   }
 }

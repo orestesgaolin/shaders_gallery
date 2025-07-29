@@ -29,6 +29,8 @@ abstract class CustomShaderBuilder {
     Widget? child,
   );
 
+  Widget? childBuilder(BuildContext context);
+
   /// Whether this shader requires an image sampler
   bool get requiresImageSampler => true;
 

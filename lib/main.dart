@@ -49,7 +49,7 @@ class ShaderInfo {
 
 final shaders = [
   ShaderInfo(
-    name: 'NTSC',
+    name: 'NTSC filter',
     assetKey: 'shaders/ntsc_shader.frag',
     description: 'An effect that emulates an old NTSC television signal.',
     sourceUrl: 'https://www.shadertoy.com/view/3tVBWR',
@@ -59,7 +59,7 @@ final shaders = [
     path: 'ntsc-shader',
   ),
   ShaderInfo(
-    name: 'CRT',
+    name: 'Interlaced Glitch CRT',
     assetKey: 'shaders/crt_shader.frag',
     description: 'A glitching screen effect',
     sourceUrl: 'https://www.shadertoy.com/view/lt3yz7',
@@ -69,7 +69,7 @@ final shaders = [
     path: 'crt-shader',
   ),
   ShaderInfo(
-    name: 'Noise',
+    name: 'Lava Lamp Gradient',
     assetKey: 'shaders/noise_shader.frag',
     description: 'Animated gradient noise with film grain effect',
     sourceUrl: 'https://www.shadertoy.com/view/DdcfzH',
@@ -198,7 +198,6 @@ class HomeScreen extends StatelessWidget {
       body: Column(
         children: [
           const TopMenu(),
-
           Expanded(child: ContentGrid()),
         ],
       ),
@@ -279,14 +278,6 @@ class TopMenu extends StatelessWidget {
             ),
           ),
           const Spacer(),
-          // Search placeholder
-          SizedBox(
-            width: 300,
-            child: ShadInput(
-              placeholder: const Text('Search shaders...'),
-              enabled: false,
-            ),
-          ),
         ],
       ),
     );

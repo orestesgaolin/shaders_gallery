@@ -35,6 +35,11 @@ class NoiseShaderBuilder extends CustomShaderBuilder {
       painter: _NoiseShaderPainter(shader),
     );
   }
+
+  @override
+  Widget? childBuilder(BuildContext context) {
+    return null;
+  }
 }
 
 class _NoiseShaderPainter extends CustomPainter {
