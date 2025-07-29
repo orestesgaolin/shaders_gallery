@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_web_plugins/flutter_web_plugins.dart';
+import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'shader_builder.dart';
@@ -11,6 +13,8 @@ import 'shader_screen.dart';
 import 'tv_test_screen.dart';
 
 void main() {
+  usePathUrlStrategy();
+
   runApp(const RgbGlitchDemo());
 }
 
@@ -81,6 +85,52 @@ final shaders = [
   ),
 ];
 
+// Helper function to create URL-safe shader names
+String shaderNameToPath(String name) {
+  return name.toLowerCase().replaceAll(' ', '-');
+}
+
+// Helper function to find shader by path
+ShaderInfo? findShaderByPath(String path) {
+  try {
+    return shaders.firstWhere(
+      (shader) => shaderNameToPath(shader.name) == path,
+    );
+  } catch (e) {
+    return null;
+  }
+}
+
+// Router configuration
+final GoRouter _router = GoRouter(
+  routes: [
+    GoRoute(
+      path: '/',
+      name: 'home',
+      builder: (context, state) => const HomeScreen(),
+    ),
+    GoRoute(
+      path: '/shader/:shaderName',
+      name: 'shader',
+      builder: (context, state) {
+        final shaderName = state.pathParameters['shaderName']!;
+        final shaderInfo = findShaderByPath(shaderName);
+
+        if (shaderInfo == null) {
+          // If shader not found, redirect to home
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            context.go('/');
+          });
+          return const HomeScreen();
+        }
+
+        return ShaderScreen(shaderInfo: shaderInfo);
+      },
+    ),
+  ],
+  errorBuilder: (context, state) => const HomeScreen(),
+);
+
 // Custom page transition builder that provides no animation (instant transition)
 class _NoTransitionPageTransitionsBuilder extends PageTransitionsBuilder {
   const _NoTransitionPageTransitionsBuilder();
@@ -107,22 +157,27 @@ class RgbGlitchDemo extends StatefulWidget {
 class _RgbGlitchDemoState extends State<RgbGlitchDemo> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
+      routerConfig: _router,
       theme: ThemeData.dark(useMaterial3: true).copyWith(
-        pageTransitionsTheme: kIsWeb 
-          ? PageTransitionsTheme(
-              builders: {
-                TargetPlatform.android: const _NoTransitionPageTransitionsBuilder(),
-                TargetPlatform.iOS: const _NoTransitionPageTransitionsBuilder(),
-                TargetPlatform.linux: const _NoTransitionPageTransitionsBuilder(),
-                TargetPlatform.macOS: const _NoTransitionPageTransitionsBuilder(),
-                TargetPlatform.windows: const _NoTransitionPageTransitionsBuilder(),
-              },
-            )
-          : null,
+        pageTransitionsTheme: kIsWeb
+            ? PageTransitionsTheme(
+                builders: {
+                  TargetPlatform.android:
+                      const _NoTransitionPageTransitionsBuilder(),
+                  TargetPlatform.iOS:
+                      const _NoTransitionPageTransitionsBuilder(),
+                  TargetPlatform.linux:
+                      const _NoTransitionPageTransitionsBuilder(),
+                  TargetPlatform.macOS:
+                      const _NoTransitionPageTransitionsBuilder(),
+                  TargetPlatform.windows:
+                      const _NoTransitionPageTransitionsBuilder(),
+                },
+              )
+            : null,
       ),
-      home: const HomeScreen(),
     );
   }
 }
@@ -150,12 +205,8 @@ class HomeScreen extends StatelessWidget {
               return _ShaderTile(
                 shaderInfo: shaderInfo,
                 onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          ShaderScreen(shaderInfo: shaderInfo),
-                    ),
-                  );
+                  final shaderPath = shaderNameToPath(shaderInfo.name);
+                  context.go('/shader/$shaderPath');
                 },
               );
             },
