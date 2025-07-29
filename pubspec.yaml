@@ -43,3 +43,4 @@ flutter:
     - shaders/noise_shader.frag
     - shaders/ntsc_shader.frag
     - shaders/rings_shader.frag
+    - shaders/clearly_bug_shader.frag

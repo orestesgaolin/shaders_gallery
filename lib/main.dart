@@ -8,6 +8,7 @@ import 'package:shaders/widgets/widgets.dart';
 
 import 'shader_builder.dart';
 import 'crt_shader_builder.dart';
+import 'clearly_bug_shader_builder.dart';
 import 'noise_overlay_shader_builder.dart';
 import 'noise_shader_builder.dart';
 import 'ntsc_shader_builder.dart';
@@ -100,6 +101,16 @@ final shaders = [
     dateAdded: DateTime(2025, 7, 29),
     builder: const RingsShaderBuilder(),
     path: 'rings-shader',
+  ),
+  ShaderInfo(
+    name: 'Clearly a Bug',
+    assetKey: 'shaders/clearly_bug_shader.frag',
+    description: 'A "Happy Accident" raymarching shader with fractal patterns and beautiful lighting.',
+    sourceUrl: 'https://www.shadertoy.com/view/33cGDj',
+    author: 'Various (see comments)',
+    dateAdded: DateTime(2025, 7, 29),
+    builder: const ClearlyBugShaderBuilder(),
+    path: 'clearly-bug-shader',
   ),
 ];
 

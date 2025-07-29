@@ -4,7 +4,7 @@ import 'package:shaders/tv_test_screen.dart';
 import '../main.dart';
 
 /// A widget that handles the animation and rendering of a shader.
-/// 
+///
 /// This widget manages the animation controller and coordinates with the shader builder
 /// to render the shader effect with proper timing and animation handling.
 class ShaderAnimationView extends StatefulWidget {
@@ -19,8 +19,7 @@ class ShaderAnimationView extends StatefulWidget {
   State<ShaderAnimationView> createState() => _ShaderAnimationViewState();
 }
 
-class _ShaderAnimationViewState extends State<ShaderAnimationView>
-    with SingleTickerProviderStateMixin {
+class _ShaderAnimationViewState extends State<ShaderAnimationView> with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
 
   @override
@@ -64,7 +63,7 @@ class _ShaderAnimationViewState extends State<ShaderAnimationView>
               (context, shader, _) {
                 final duration = widget.shaderInfo.builder.animationDuration;
                 double timeValue;
-        
+
                 if (duration != null) {
                   // Bounded animation - use animated value between 0-1
                   final animation = TweenSequence<double>([
@@ -103,7 +102,7 @@ class _ShaderAnimationViewState extends State<ShaderAnimationView>
             );
           },
         );
-      }
+      },
     );
   }
 }
