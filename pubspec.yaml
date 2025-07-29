@@ -20,6 +20,7 @@ dependencies:
   path: ^1.9.1
   shadcn_ui: ^0.28.1
   url_launcher: ^6.3.2
+  google_fonts: ^6.2.1
 
 dev_dependencies:
   flutter_test:

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 class ShaderSourceViewer extends StatefulWidget {
@@ -79,11 +80,9 @@ class _ShaderSourceViewerState extends State<ShaderSourceViewer> {
                   )
                 : SelectableText(
                     _sourceCode!,
-                    style: const TextStyle(
-                      fontFamily: 'GeistMono',
-                      fontFamilyFallback: <String>['Courier'],
-                      fontSize: 12,
-                      color: Color.fromARGB(255, 55, 113, 57),
+                    style: GoogleFonts.spaceMono(
+                      fontSize: 14,
+                      color: const Color.fromARGB(255, 33, 77, 34)
                     ),
                   ),
           ),

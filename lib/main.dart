@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:shaders/widgets/widgets.dart';
 
@@ -174,6 +175,11 @@ class _RgbGlitchDemoState extends State<RgbGlitchDemo> {
   Widget build(BuildContext context) {
     return ShadApp.custom(
       themeMode: ThemeMode.light,
+      theme: ShadThemeData(
+        colorScheme: ShadGrayColorScheme.light(),
+        brightness: Brightness.light,
+        textTheme: ShadTextTheme.fromGoogleFont(GoogleFonts.poppins),
+      ),
 
       appBuilder: (context) {
         return MaterialApp.router(
