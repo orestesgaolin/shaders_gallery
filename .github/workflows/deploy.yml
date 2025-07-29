@@ -40,6 +40,9 @@ jobs:
     - name: Build web
       run: flutter build web --release --base-href /shaders_gallery/
 
+    - name: Create empty shaders/index.html
+      run: echo "<!DOCTYPE html><html><head></head><body></body></html>" > build/web/shaders/index.html
+
     - name: Setup Pages
       uses: actions/configure-pages@v5
 
