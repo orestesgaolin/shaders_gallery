@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
 
 class ShaderSourceViewer extends StatefulWidget {
   final String assetKey;
@@ -35,7 +36,7 @@ class _ShaderSourceViewerState extends State<ShaderSourceViewer> {
         final basename = assetPath.split('/').last;
         assetPath = 'assets/shaders_text/$basename';
       }
-      
+
       final source = await rootBundle.loadString(assetPath);
       setState(() {
         _sourceCode = source;
@@ -62,71 +63,32 @@ class _ShaderSourceViewerState extends State<ShaderSourceViewer> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(Icons.code, color: Theme.of(context).primaryColor),
-                const SizedBox(width: 8),
-                Text(
-                  '${widget.shaderName} Source Code',
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                const Spacer(),
-                if (_sourceCode != null)
-                  IconButton(
-                    icon: const Icon(Icons.copy),
-                    tooltip: 'Copy to clipboard',
-                    onPressed: () {
-                      Clipboard.setData(ClipboardData(text: _sourceCode!));
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Shader source copied to clipboard'),
-                          duration: Duration(seconds: 2),
-                        ),
-                      );
-                    },
-                  ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Expanded(
-              child: _isLoading
-                  ? const Center(child: CircularProgressIndicator())
-                  : _error != null
-                  ? Center(
-                      child: Text(
-                        _error!,
-                        style: TextStyle(color: Colors.red[400]),
-                      ),
-                    )
-                  : Container(
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[900],
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: Colors.grey[700]!),
-                      ),
-                      child: SingleChildScrollView(
-                        padding: const EdgeInsets.all(12),
-                        child: SelectableText(
-                          _sourceCode!,
-                          style: const TextStyle(
-                            fontFamily: 'Roboto Mono',
-                            fontFamilyFallback: <String>["Courier"],
-                            fontSize: 12,
-                            color: Colors.green,
-                          ),
-                        ),
-                      ),
+    return ShadCard(
+      backgroundColor: Colors.grey[100],
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: _isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : _error != null
+                ? Center(
+                    child: Text(
+                      _error!,
+                      style: TextStyle(color: Colors.red[400]),
                     ),
-            ),
-          ],
-        ),
+                  )
+                : SelectableText(
+                  _sourceCode!,
+                  style: const TextStyle(
+                    fontFamily: 'Roboto Mono',
+                    fontFamilyFallback: <String>["Courier"],
+                    fontSize: 12,
+                    color: Color.fromARGB(255, 55, 113, 57),
+                  ),
+                ),
+          ),
+        ],
       ),
     );
   }

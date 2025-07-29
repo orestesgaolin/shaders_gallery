@@ -15,11 +15,11 @@ dependencies:
     sdk: flutter
   flutter_shaders: ^0.1.0
 
-  # The following adds the Cupertino Icons font to your application.
   cupertino_icons: ^1.0.8
-  url_launcher: ^6.3.2
-  path: ^1.9.1
   go_router: ^14.6.2
+  path: ^1.9.1
+  shadcn_ui: ^0.28.1
+  url_launcher: ^6.3.2
 
 dev_dependencies:
   flutter_test:
@@ -28,7 +28,6 @@ dev_dependencies:
   flutter_lints: ^5.0.0
 
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

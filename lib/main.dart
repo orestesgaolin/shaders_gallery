@@ -1,7 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_web_plugins/flutter_web_plugins.dart';
+import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'shader_builder.dart';
@@ -54,8 +55,8 @@ final shaders = [
     assetKey: 'shaders/ntsc_shader.frag',
     description: 'An effect that emulates an old NTSC television signal.',
     sourceUrl: 'https://www.shadertoy.com/view/3tVBWR',
-    author: 'Shadertoy Community',
-    dateAdded: DateTime(2024, 1, 15),
+    author: 'BitOfGold',
+    dateAdded: DateTime(2025, 7, 28),
     builder: const NtscShaderBuilder(),
     path: 'ntsc-shader',
   ),
@@ -65,7 +66,7 @@ final shaders = [
     description: 'A glitching screen effect',
     sourceUrl: 'https://www.shadertoy.com/view/lt3yz7',
     author: '@tommclaughlan',
-    dateAdded: DateTime(2024, 1, 20),
+    dateAdded: DateTime(2025, 7, 28),
     builder: const CrtShaderBuilder(),
     path: 'crt-shader',
   ),
@@ -74,8 +75,8 @@ final shaders = [
     assetKey: 'shaders/noise_shader.frag',
     description: 'Animated gradient noise with film grain effect',
     sourceUrl: 'https://www.shadertoy.com/view/DdcfzH',
-    author: 'Shadertoy Community',
-    dateAdded: DateTime(2024, 2, 1),
+    author: 'welches',
+    dateAdded: DateTime(2025, 7, 28),
     builder: const NoiseShaderBuilder(),
     path: 'noise-shader',
   ),
@@ -85,8 +86,8 @@ final shaders = [
     description: 'Applies animated noise effect as an overlay on content',
     sourceUrl: 'https://www.shadertoy.com/view/DdcfzH',
     path: 'noise-overlay-shader',
-    author: 'Shadertoy Community',
-    dateAdded: DateTime(2024, 2, 5),
+    author: 'welches',
+    dateAdded: DateTime(2025, 7, 28),
     builder: const NoiseOverlayShaderBuilder(),
   ),
 ];
@@ -161,27 +162,31 @@ class RgbGlitchDemo extends StatefulWidget {
 class _RgbGlitchDemoState extends State<RgbGlitchDemo> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      debugShowCheckedModeBanner: false,
-      routerConfig: _router,
-      theme: ThemeData.dark(useMaterial3: true).copyWith(
-        pageTransitionsTheme: kIsWeb
-            ? PageTransitionsTheme(
-                builders: {
-                  TargetPlatform.android:
-                      const _NoTransitionPageTransitionsBuilder(),
-                  TargetPlatform.iOS:
-                      const _NoTransitionPageTransitionsBuilder(),
-                  TargetPlatform.linux:
-                      const _NoTransitionPageTransitionsBuilder(),
-                  TargetPlatform.macOS:
-                      const _NoTransitionPageTransitionsBuilder(),
-                  TargetPlatform.windows:
-                      const _NoTransitionPageTransitionsBuilder(),
-                },
-              )
-            : null,
-      ),
+    return ShadApp.custom(
+      themeMode: ThemeMode.light,
+
+      appBuilder: (context) {
+        return MaterialApp.router(
+          debugShowCheckedModeBanner: false,
+          routerConfig: _router,
+          theme: Theme.of(context).copyWith(
+            pageTransitionsTheme: kIsWeb || defaultTargetPlatform.isDesktop
+                ? PageTransitionsTheme(
+                    builders: {
+                      TargetPlatform.android: const _NoTransitionPageTransitionsBuilder(),
+                      TargetPlatform.iOS: const _NoTransitionPageTransitionsBuilder(),
+                      TargetPlatform.linux: const _NoTransitionPageTransitionsBuilder(),
+                      TargetPlatform.macOS: const _NoTransitionPageTransitionsBuilder(),
+                      TargetPlatform.windows: const _NoTransitionPageTransitionsBuilder(),
+                    },
+                  )
+                : null,
+          ),
+          builder: (context, child) {
+            return ShadAppBuilder(child: child!);
+          },
+        );
+      },
     );
   }
 }
@@ -192,72 +197,137 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Shader Gallery'), centerTitle: true),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          return GridView.builder(
-            padding: const EdgeInsets.all(16),
-            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: 350,
-              crossAxisSpacing: 16,
-              mainAxisSpacing: 16,
-              childAspectRatio: 4 / 3,
-            ),
-            itemCount: shaders.length,
-            itemBuilder: (context, index) {
-              final shaderInfo = shaders[index];
-              return _ShaderTile(
-                shaderInfo: shaderInfo,
-                onTap: () {
-                  context.go('/shader/${shaderInfo.path}');
-                },
-              );
-            },
-          );
-        },
+      body: Column(
+        children: [
+          const TopMenu(),
+
+          Expanded(child: ContentGrid()),
+        ],
       ),
     );
   }
 }
 
-class _ShaderTile extends StatelessWidget {
-  const _ShaderTile({required this.shaderInfo, required this.onTap});
+class ContentGrid extends StatelessWidget {
+  const ContentGrid({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Responsive grid
+        int crossAxisCount;
+        if (constraints.maxWidth > 1200) {
+          crossAxisCount = 4;
+        } else if (constraints.maxWidth > 800) {
+          crossAxisCount = 3;
+        } else if (constraints.maxWidth > 600) {
+          crossAxisCount = 2;
+        } else {
+          crossAxisCount = 1;
+        }
+
+        return GridView.builder(
+          padding: const EdgeInsets.all(24),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: crossAxisCount,
+            crossAxisSpacing: 16,
+            mainAxisSpacing: 16,
+            childAspectRatio: 4 / 3,
+          ),
+          itemCount: shaders.length,
+          itemBuilder: (context, index) {
+            final shaderInfo = shaders[index];
+            return _ShaderCard(
+              shaderInfo: shaderInfo,
+              onTap: () {
+                context.go('/shader/${shaderInfo.path}');
+              },
+            );
+          },
+        );
+      },
+    );
+  }
+}
+
+class TopMenu extends StatelessWidget {
+  const TopMenu({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            color: ShadTheme.of(context).colorScheme.border,
+            width: 1,
+          ),
+        ),
+      ),
+      child: Row(
+        children: [
+          // Home button
+          ShadButton(
+            onPressed: () => context.go('/'),
+            child: const Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.home, size: 20),
+                SizedBox(width: 8),
+                Text('Shader Gallery'),
+              ],
+            ),
+          ),
+          const Spacer(),
+          // Search placeholder
+          SizedBox(
+            width: 300,
+            child: ShadInput(
+              placeholder: const Text('Search shaders...'),
+              enabled: false,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ShaderCard extends StatelessWidget {
+  const _ShaderCard({required this.shaderInfo, required this.onTap});
 
   final ShaderInfo shaderInfo;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: onTap,
-        child: GridTile(
-          footer: GridTileBar(
-            backgroundColor: Colors.black45,
-            title: Text(shaderInfo.name, overflow: TextOverflow.ellipsis),
-            subtitle: Text(
-              shaderInfo.description,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-            trailing: IconButton(
-              icon: const Icon(Icons.link),
-              tooltip: 'View Source',
-              onPressed: () async {
-                final url = Uri.parse(shaderInfo.sourceUrl);
-                if (await canLaunchUrl(url)) {
-                  await launchUrl(url);
-                }
-              },
-            ),
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(8),
+      child: ShadCard(
+        title: Text(shaderInfo.name),
+        footer: Text.rich(
+          TextSpan(
+            children: [
+              TextSpan(text: 'by ${shaderInfo.author}'),
+            ],
           ),
-          child: const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: TvTestScreen(),
-          ),
+          style: ShadTheme.of(context).textTheme.small,
+        ),
+        description: Text(
+          shaderInfo.description,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
         ),
       ),
     );
+  }
+}
+
+extension on TargetPlatform {
+  bool get isDesktop {
+    return this == TargetPlatform.macOS || this == TargetPlatform.windows || this == TargetPlatform.linux;
   }
 }
