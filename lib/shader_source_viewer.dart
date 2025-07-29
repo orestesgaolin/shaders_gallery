@@ -80,7 +80,7 @@ class _ShaderSourceViewerState extends State<ShaderSourceViewer> {
                 : SelectableText(
                     _sourceCode!,
                     style: const TextStyle(
-                      fontFamily: 'Roboto Mono',
+                      fontFamily: 'GeistMono',
                       fontFamilyFallback: <String>['Courier'],
                       fontSize: 12,
                       color: Color.fromARGB(255, 55, 113, 57),
