@@ -37,9 +37,4 @@ abstract class CustomShaderBuilder {
 
   /// Set shader uniforms
   void setUniforms(FragmentShader shader, Size size, double time);
-
-  /// Build custom controls/configuration UI for this shader
-  Widget buildControls(BuildContext context) {
-    return const SizedBox.shrink();
-  }
 }

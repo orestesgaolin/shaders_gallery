@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import 'shader_builder.dart';
 import 'crt_shader_builder.dart';
@@ -11,7 +10,6 @@ import 'noise_overlay_shader_builder.dart';
 import 'noise_shader_builder.dart';
 import 'ntsc_shader_builder.dart';
 import 'shader_screen.dart';
-import 'tv_test_screen.dart';
 
 void main() {
   usePathUrlStrategy();

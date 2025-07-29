@@ -32,40 +32,4 @@ class NtscShaderBuilder extends CustomShaderBuilder {
       );
     }, child: child ?? const SizedBox());
   }
-
-  @override
-  Widget buildControls(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'NTSC Shader Controls',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 8),
-            const Text('An effect that emulates an old NTSC television signal.'),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                Icon(Icons.tv, size: 16, color: Colors.grey[400]),
-                const SizedBox(width: 8),
-                const Text('Effect: NTSC TV Signal'),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Icon(Icons.repeat, size: 16, color: Colors.grey[400]),
-                const SizedBox(width: 8),
-                const Text('Animation: Bounded (loops with reverse)'),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }

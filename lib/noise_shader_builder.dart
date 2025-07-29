@@ -35,42 +35,6 @@ class NoiseShaderBuilder extends CustomShaderBuilder {
       painter: _NoiseShaderPainter(shader),
     );
   }
-
-  @override
-  Widget buildControls(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Noise Shader Controls',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 8),
-            const Text('Animated gradient noise with film grain effect'),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                Icon(Icons.grain, size: 16, color: Colors.grey[400]),
-                const SizedBox(width: 8),
-                Text('Film Grain: ${(filmGrainIntensity * 100).toInt()}%'),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Icon(Icons.all_inclusive, size: 16, color: Colors.grey[400]),
-                const SizedBox(width: 8),
-                const Text('Animation: Continuous'),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }
 
 class _NoiseShaderPainter extends CustomPainter {

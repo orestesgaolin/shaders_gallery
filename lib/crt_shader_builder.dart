@@ -32,32 +32,4 @@ class CrtShaderBuilder extends CustomShaderBuilder {
       );
     }, child: child ?? const SizedBox());
   }
-
-  @override
-  Widget buildControls(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'CRT Shader Controls',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 8),
-            const Text('This shader creates a glitching CRT screen effect with RGB displacement.'),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                Icon(Icons.info_outline, size: 16, color: Colors.grey[400]),
-                const SizedBox(width: 8),
-                const Text('Animation: Bounded (loops with reverse)'),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }

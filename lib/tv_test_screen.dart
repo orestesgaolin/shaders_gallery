@@ -191,7 +191,7 @@ class TvTestScreenPainter extends CustomPainter {
 
   void _drawGrid(Canvas canvas, double width, double height) {
     final paint = Paint()
-      ..color = Colors.black.withOpacity(0.3)
+      ..color = Colors.black.withValues(alpha: 0.3)
       ..strokeWidth = 0.5;
 
     const gridSpacing = 20.0;

@@ -44,48 +44,4 @@ class NoiseOverlayShaderBuilder extends CustomShaderBuilder {
       );
     }, child: child ?? const SizedBox());
   }
-
-  @override
-  Widget buildControls(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Noise Overlay Controls',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 8),
-            const Text('Applies animated noise effect as an overlay on content'),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                Icon(Icons.grain, size: 16, color: Colors.grey[400]),
-                const SizedBox(width: 8),
-                Text('Film Grain: ${(filmGrainIntensity * 100).toInt()}%'),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Icon(Icons.opacity, size: 16, color: Colors.grey[400]),
-                const SizedBox(width: 8),
-                Text('Opacity: ${(noiseOpacity * 100).toInt()}%'),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Icon(Icons.all_inclusive, size: 16, color: Colors.grey[400]),
-                const SizedBox(width: 8),
-                const Text('Animation: Continuous'),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }

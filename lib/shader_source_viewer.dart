@@ -47,8 +47,7 @@ class _ShaderSourceViewerState extends State<ShaderSourceViewer> {
       String errorMessage;
 
       if (e is FormatException) {
-        errorMessage =
-            'Shader file appears to be in binary format. Asset transformation may not be working correctly.';
+        errorMessage = 'Shader file appears to be in binary format. Asset transformation may not be working correctly.';
       } else {
         errorMessage =
             'Failed to load shader source: $e\n\nEnsure shader files are copied to assets directory. Run: dart scripts/copy_shaders.dart';
@@ -79,14 +78,14 @@ class _ShaderSourceViewerState extends State<ShaderSourceViewer> {
                     ),
                   )
                 : SelectableText(
-                  _sourceCode!,
-                  style: const TextStyle(
-                    fontFamily: 'Roboto Mono',
-                    fontFamilyFallback: <String>["Courier"],
-                    fontSize: 12,
-                    color: Color.fromARGB(255, 55, 113, 57),
+                    _sourceCode!,
+                    style: const TextStyle(
+                      fontFamily: 'Roboto Mono',
+                      fontFamilyFallback: <String>['Courier'],
+                      fontSize: 12,
+                      color: Color.fromARGB(255, 55, 113, 57),
+                    ),
                   ),
-                ),
           ),
         ],
       ),
