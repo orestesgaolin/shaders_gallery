@@ -25,6 +25,9 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  integration_test:
+    sdk: flutter
+  image: ^4.5.4
 
   flutter_lints: ^5.0.0
 
@@ -36,6 +39,7 @@ flutter:
 
   assets:
     - assets/shaders_text/
+    - assets/screenshots/
 
   shaders:
     - shaders/crt_shader.frag

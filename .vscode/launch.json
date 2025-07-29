@@ -8,17 +8,20 @@
             "name": "shaders",
             "request": "launch",
             "type": "dart",
+            "program": "lib/main.dart",
             "preLaunchTask": "Copy Shaders to Assets"
         },
         {
             "name": "shaders (profile mode)",
             "request": "launch",
+            "program": "lib/main.dart",
             "type": "dart",
             "flutterMode": "profile",
             "preLaunchTask": "Copy Shaders to Assets"
         },
         {
             "name": "shaders (release mode)",
+            "program": "lib/main.dart",
             "request": "launch",
             "type": "dart",
             "flutterMode": "release",

@@ -35,7 +35,7 @@ class ShaderScreen extends StatelessWidget {
 
   Widget _buildTopMenu(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(

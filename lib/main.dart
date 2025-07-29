@@ -4,6 +4,7 @@ import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:shaders/widgets/shader_card.dart';
 import 'package:shaders/widgets/widgets.dart';
 
 import 'shader_builder.dart';
@@ -262,12 +263,12 @@ class ContentGrid extends StatelessWidget {
             crossAxisCount: crossAxisCount,
             crossAxisSpacing: 16,
             mainAxisSpacing: 16,
-            childAspectRatio: 4 / 3,
+            childAspectRatio: 1,
           ),
           itemCount: shaders.length,
           itemBuilder: (context, index) {
             final shaderInfo = shaders[index];
-            return _ShaderCard(
+            return ShaderCard(
               shaderInfo: shaderInfo,
               onTap: () {
                 context.go('/shader/${shaderInfo.path}');
@@ -276,37 +277,6 @@ class ContentGrid extends StatelessWidget {
           },
         );
       },
-    );
-  }
-}
-
-class _ShaderCard extends StatelessWidget {
-  const _ShaderCard({required this.shaderInfo, required this.onTap});
-
-  final ShaderInfo shaderInfo;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(8),
-      child: ShadCard(
-        title: Text(shaderInfo.name),
-        footer: Text.rich(
-          TextSpan(
-            children: [
-              TextSpan(text: 'by ${shaderInfo.author}'),
-            ],
-          ),
-          style: ShadTheme.of(context).textTheme.small,
-        ),
-        description: Text(
-          shaderInfo.description,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-        ),
-      ),
     );
   }
 }
