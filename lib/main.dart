@@ -26,6 +26,7 @@ class ShaderInfo {
   final String author;
   final DateTime dateAdded;
   final CustomShaderBuilder builder;
+  final String path;
 
   const ShaderInfo({
     required this.name,
@@ -35,6 +36,7 @@ class ShaderInfo {
     required this.author,
     required this.dateAdded,
     required this.builder,
+    required this.path,
   });
 
   ShaderMetadata get metadata => ShaderMetadata(
@@ -55,6 +57,7 @@ final shaders = [
     author: 'Shadertoy Community',
     dateAdded: DateTime(2024, 1, 15),
     builder: const NtscShaderBuilder(),
+    path: 'ntsc-shader',
   ),
   ShaderInfo(
     name: 'CRT',
@@ -64,6 +67,7 @@ final shaders = [
     author: '@tommclaughlan',
     dateAdded: DateTime(2024, 1, 20),
     builder: const CrtShaderBuilder(),
+    path: 'crt-shader',
   ),
   ShaderInfo(
     name: 'Noise',
@@ -73,12 +77,14 @@ final shaders = [
     author: 'Shadertoy Community',
     dateAdded: DateTime(2024, 2, 1),
     builder: const NoiseShaderBuilder(),
+    path: 'noise-shader',
   ),
   ShaderInfo(
     name: 'Noise Overlay',
     assetKey: 'shaders/noise_overlay_shader.frag',
     description: 'Applies animated noise effect as an overlay on content',
     sourceUrl: 'https://www.shadertoy.com/view/DdcfzH',
+    path: 'noise-overlay-shader',
     author: 'Shadertoy Community',
     dateAdded: DateTime(2024, 2, 5),
     builder: const NoiseOverlayShaderBuilder(),
@@ -93,9 +99,7 @@ String shaderNameToPath(String name) {
 // Helper function to find shader by path
 ShaderInfo? findShaderByPath(String path) {
   try {
-    return shaders.firstWhere(
-      (shader) => shaderNameToPath(shader.name) == path,
-    );
+    return shaders.firstWhere((shader) => shader.path == path);
   } catch (e) {
     return null;
   }
@@ -205,8 +209,7 @@ class HomeScreen extends StatelessWidget {
               return _ShaderTile(
                 shaderInfo: shaderInfo,
                 onTap: () {
-                  final shaderPath = shaderNameToPath(shaderInfo.name);
-                  context.go('/shader/$shaderPath');
+                  context.go('/shader/${shaderInfo.path}');
                 },
               );
             },
