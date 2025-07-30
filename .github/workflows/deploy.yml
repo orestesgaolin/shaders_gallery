@@ -5,6 +5,9 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
+# This workflow builds a Flutter web app with SPA routing support for GitHub Pages
+# It uses a custom 404.html file and redirect scripts to handle client-side routing
+
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
@@ -37,13 +40,31 @@ jobs:
     - name: Copy shaders to assets
       run: dart scripts/copy_shaders.dart
 
-    - name: Build web
-      run: flutter build web --release --base-href /shaders_gallery/
+    - name: Build for GitHub Pages (with SPA routing)
+      run: dart scripts/build_github_pages.dart
 
-    - name: Create empty shaders/index.html
+    - name: Verify SPA routing files
       run: |
-        mkdir -p build/web/shader
-        echo "<!DOCTYPE html><html><head></head><body></body></html>" > build/web/shader/index.html
+        echo "📋 Verifying GitHub Pages SPA setup..."
+        if [ -f "build/web/404.html" ]; then
+          echo "✅ 404.html found"
+        else
+          echo "❌ 404.html missing"
+          exit 1
+        fi
+        if [ -f "build/web/.nojekyll" ]; then
+          echo "✅ .nojekyll found"
+        else
+          echo "❌ .nojekyll missing"
+          exit 1
+        fi
+        if grep -q "/shaders_gallery/" build/web/index.html; then
+          echo "✅ Base href correctly set"
+        else
+          echo "❌ Base href not found in index.html"
+          exit 1
+        fi
+        echo "🎉 All SPA routing files verified!"
 
     - name: Setup Pages
       uses: actions/configure-pages@v5
