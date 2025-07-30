@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_shaders/flutter_shaders.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'dart:ui';
 import 'shader_builder.dart';
 
 class NoiseOverlayShaderBuilder extends CustomShaderBuilder {
-  final double filmGrainIntensity;
-  final double noiseOpacity;
-
-  const NoiseOverlayShaderBuilder({
-    this.filmGrainIntensity = 0.2,
-    this.noiseOpacity = 0.3,
-  });
+  const NoiseOverlayShaderBuilder();
 
   @override
   bool get requiresImageSampler => true;
@@ -22,8 +17,7 @@ class NoiseOverlayShaderBuilder extends CustomShaderBuilder {
   void setUniforms(FragmentShader shader, Size size, double time) {
     shader
       ..setFloat(0, size.width)
-      ..setFloat(1, size.height)
-      ..setFloat(2, filmGrainIntensity);
+      ..setFloat(1, size.height);
   }
 
   @override
@@ -34,23 +28,9 @@ class NoiseOverlayShaderBuilder extends CustomShaderBuilder {
     double time,
     Widget? child,
   ) {
-    return Stack(
-      children: [
-        AnimatedSampler(
-          (image, size, canvas) {
-            shader.setImageSampler(0, image);
-            canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), Paint()..shader = shader);
-          },
-
-          child: child ?? const SizedBox(),
-        ),
-        Center(
-          child: Text(
-            'Noise',
-            style: TextStyle(color: Colors.white, fontSize: 32, fontWeight: FontWeight.bold),
-          ),
-        ),
-      ],
+    return NoiseShaderOverlayWidget(
+      shader: shader,
+      child: child,
     );
   }
 
@@ -68,6 +48,78 @@ class NoiseOverlayShaderBuilder extends CustomShaderBuilder {
           ),
         ),
       ),
+    );
+  }
+}
+
+class NoiseShaderOverlayWidget extends StatefulWidget {
+  const NoiseShaderOverlayWidget({
+    super.key,
+    required this.shader,
+    this.child,
+  });
+
+  final FragmentShader shader;
+  final Widget? child;
+
+  @override
+  State<NoiseShaderOverlayWidget> createState() => _NoiseShaderOverlayWidgetState();
+}
+
+class _NoiseShaderOverlayWidgetState extends State<NoiseShaderOverlayWidget> {
+  double intensity = 0.2;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.shader.setFloat(2, intensity);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        AnimatedSampler(
+          (image, size, canvas) {
+            widget.shader.setImageSampler(0, image);
+            canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), Paint()..shader = widget.shader);
+          },
+
+          child: widget.child ?? const SizedBox(),
+        ),
+        Center(
+          child: Text(
+            'Noise',
+            style: TextStyle(color: Colors.white, fontSize: 32, fontWeight: FontWeight.bold),
+          ),
+        ),
+        Positioned(
+          bottom: 0,left: 0, right: 0,
+          child: Row(
+            children: [
+              Expanded(
+                child: Slider(
+                  value: intensity,
+                  min: 0,
+                  max: 1,
+                  onChanged: (value) {
+                    setState(() {
+                      intensity = value;
+                      widget.shader.setFloat(2, intensity);
+                    });
+                  },
+                ),
+              ),
+              Text(
+                'Intensity: ${intensity.toStringAsFixed(2)}',
+                style: GoogleFonts.spaceMono(
+                  fontSize: 14,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'dart:ui';
 import 'shader_builder.dart';
 
 class NoiseShaderBuilder extends CustomShaderBuilder {
-  final double filmGrainIntensity;
-
-  const NoiseShaderBuilder({this.filmGrainIntensity = 0.1});
+  const NoiseShaderBuilder();
 
   @override
   bool get requiresImageSampler => false;
@@ -18,8 +17,8 @@ class NoiseShaderBuilder extends CustomShaderBuilder {
     shader
       ..setFloat(0, size.width)
       ..setFloat(1, size.height)
-      ..setFloat(2, time)
-      ..setFloat(3, filmGrainIntensity);
+      ..setFloat(2, time);
+    // ..setFloat(3, filmGrainIntensity);
   }
 
   @override
@@ -30,15 +29,73 @@ class NoiseShaderBuilder extends CustomShaderBuilder {
     double time,
     Widget? child,
   ) {
-    return CustomPaint(
-      size: Size.infinite,
-      painter: _NoiseShaderPainter(shader),
+    return NoiseShaderWidget(
+      shader: shader,
     );
   }
 
   @override
   Widget? childBuilder(BuildContext context) {
     return null;
+  }
+}
+
+class NoiseShaderWidget extends StatefulWidget {
+  const NoiseShaderWidget({
+    super.key,
+    required this.shader,
+  });
+
+  final FragmentShader shader;
+
+  @override
+  State<NoiseShaderWidget> createState() => _NoiseShaderWidgetState();
+}
+
+class _NoiseShaderWidgetState extends State<NoiseShaderWidget> {
+  double intensity = 0.1;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.shader.setFloat(3, intensity);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Expanded(
+          child: CustomPaint(
+            size: Size.infinite,
+            painter: _NoiseShaderPainter(widget.shader),
+          ),
+        ),
+        Row(
+          children: [
+            Expanded(
+              child: Slider(
+                value: intensity,
+                min: 0,
+                max: 1,
+                onChanged: (value) {
+                  setState(() {
+                    intensity = value;
+                    widget.shader.setFloat(3, intensity);
+                  });
+                },
+              ),
+            ),
+            Text(
+              'Intensity: ${intensity.toStringAsFixed(2)}',
+              style: GoogleFonts.spaceMono(
+                fontSize: 14,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
   }
 }
 
