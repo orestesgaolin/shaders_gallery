@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:shaders/widgets/shader_card.dart';
 import 'package:shaders/widgets/widgets.dart';
+import 'package:shaders/meta/meta_tag_manager.dart';
 
 import 'shader_builder.dart';
 import 'crt_shader_builder.dart';
@@ -135,7 +136,15 @@ final GoRouter _router = GoRouter(
     GoRoute(
       path: '/',
       name: 'home',
-      builder: (context, state) => const HomeScreen(),
+      builder: (context, state) {
+        // Update meta tags for home page
+        if (kIsWeb) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            MetaTagManager.updateForHomePage();
+          });
+        }
+        return const HomeScreen();
+      },
     ),
     GoRoute(
       path: '/shader/:shaderName',
@@ -152,11 +161,33 @@ final GoRouter _router = GoRouter(
           return const HomeScreen();
         }
 
+        // Update meta tags for this shader
+        if (kIsWeb) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            MetaTagManager.updateForShader(
+              shaderName: shaderInfo.path,
+              shaderTitle: shaderInfo.name,
+              description: shaderInfo.description,
+              author: shaderInfo.author,
+              imageUrl: MetaTagManager.getShaderImageUrl(shaderInfo.path),
+              sourceUrl: shaderInfo.sourceUrl,
+            );
+          });
+        }
+
         return ShaderScreen(shaderInfo: shaderInfo);
       },
     ),
   ],
-  errorBuilder: (context, state) => const HomeScreen(),
+  errorBuilder: (context, state) {
+    // Update meta tags for error/home page
+    if (kIsWeb) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        MetaTagManager.updateForHomePage();
+      });
+    }
+    return const HomeScreen();
+  },
 );
 
 // Custom page transition builder that provides no animation (instant transition)

@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://roszkowski.dev/shaders_gallery/sitemap.xml
+
+# Specific pages to index
+Allow: /shader/
+
+# Disallow paths that don't exist
+Disallow: *.dart
+Disallow: /flutter_assets/
+Disallow: /canvaskit/

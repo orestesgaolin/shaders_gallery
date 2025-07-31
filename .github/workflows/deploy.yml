@@ -40,6 +40,10 @@ jobs:
     - name: Copy shaders to assets
       run: dart scripts/copy_shaders.dart
 
+    - name: Generate SEO files
+      run: |
+        dart scripts/generate_sitemap.dart
+
     - name: Build for GitHub Pages (with SPA routing)
       run: dart scripts/build_github_pages.dart
 
@@ -64,7 +68,19 @@ jobs:
           echo "❌ Base href not found in index.html"
           exit 1
         fi
-        echo "🎉 All SPA routing files verified!"
+        if [ -f "build/web/sitemap.xml" ]; then
+          echo "✅ sitemap.xml found"
+        else
+          echo "❌ sitemap.xml missing"
+          exit 1
+        fi
+        if [ -f "build/web/robots.txt" ]; then
+          echo "✅ robots.txt found"
+        else
+          echo "❌ robots.txt missing"
+          exit 1
+        fi
+        echo "🎉 All SPA routing and SEO files verified!"
 
     - name: Setup Pages
       uses: actions/configure-pages@v5
