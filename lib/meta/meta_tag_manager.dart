@@ -3,11 +3,6 @@ import 'meta_tag_manager_stub.dart'
     if (dart.library.html) 'meta_tag_manager_web.dart'
     if (dart.library.js_interop) 'meta_tag_manager_web.dart';
 
-/// Creates the appropriate meta tag manager implementation for the current platform
-MetaTagManagerInterface createMetaTagManager() {
-  return MetaTagManagerStub();
-}
-
 /// Factory class that provides the appropriate meta tag manager based on platform
 class MetaTagManager {
   static MetaTagManagerInterface? _instance;

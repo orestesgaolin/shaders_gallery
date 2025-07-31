@@ -45,7 +45,7 @@ jobs:
         dart scripts/generate_sitemap.dart
 
     - name: Build for GitHub Pages (with SPA routing)
-      run: dart scripts/build_github_pages.dart
+      run: dart scripts/build_github_pages.dart --release
 
     - name: Verify SPA routing files
       run: |

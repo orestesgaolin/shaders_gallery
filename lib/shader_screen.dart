@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import 'package:go_router/go_router.dart';
-import 'package:shaders/widgets/details_top_menu.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'widgets/widgets.dart';
 import 'main.dart';
 import 'shader_source_viewer.dart';
@@ -35,7 +32,7 @@ class ShaderScreen extends StatelessWidget {
 
   Widget _buildTopMenu(BuildContext context) {
     return Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
