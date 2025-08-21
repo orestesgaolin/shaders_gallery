@@ -23,15 +23,18 @@ class NtscShaderBuilder extends CustomShaderBuilder {
     double time,
     Widget? child,
   ) {
-    return AnimatedSampler((image, size, canvas) {
-      if (requiresImageSampler) {
-        shader.setImageSampler(0, image);
-      }
-      canvas.drawRect(
-        Rect.fromLTWH(0, 0, size.width, size.height),
-        Paint()..shader = shader,
-      );
-    }, child: child ?? const SizedBox());
+    return AnimatedSampler(
+      (image, size, canvas) {
+        if (requiresImageSampler) {
+          shader.setImageSampler(0, image);
+        }
+        canvas.drawRect(
+          Rect.fromLTWH(0, 0, size.width, size.height),
+          Paint()..shader = shader,
+        );
+      },
+      child: child ?? const SizedBox(),
+    );
   }
 
   @override

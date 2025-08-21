@@ -8,15 +8,14 @@ import 'package:shaders/widgets/shader_card.dart';
 import 'package:shaders/widgets/widgets.dart';
 import 'package:shaders/meta/meta_tag_manager.dart';
 
+import 'common_shader_builder.dart';
 import 'shader_builder.dart';
 import 'crt_shader_builder.dart';
-import 'clearly_bug_shader_builder.dart';
 import 'noise_overlay_shader_builder.dart';
 import 'noise_shader_builder.dart';
 import 'ntsc_shader_builder.dart';
 import 'rings_shader_builder.dart';
 import 'shader_screen.dart';
-import 'ai_assistant_shader_builder.dart';
 import 'branded_ai_assistant_shader_builder.dart';
 
 void main() {
@@ -120,8 +119,9 @@ final shaders = [
     sourceUrl: 'https://www.shadertoy.com/view/33cGDj',
     author: 'mrange',
     dateAdded: DateTime(2025, 7, 29),
-    builder: const ClearlyBugShaderBuilder(),
+    builder: const CommonShaderBuilder(),
     path: 'clearly-bug-shader',
+    backgroundColor: Colors.black,
   ),
   ShaderInfo(
     name: 'AI Assistant',
@@ -130,7 +130,7 @@ final shaders = [
     sourceUrl: 'https://www.shadertoy.com/view/MXsyzl',
     author: 'Saphirah',
     dateAdded: DateTime(2025, 8, 21),
-    builder: const AiAssistantShaderBuilder(),
+    builder: const CommonShaderBuilder(),
     path: 'ai-assistant',
     padding: EdgeInsets.all(32),
     backgroundColor: Colors.black,
@@ -145,6 +145,18 @@ final shaders = [
     dateAdded: DateTime(2025, 8, 21),
     builder: const BrandedAiAssistantShaderBuilder(),
     path: 'branded-ai-assistant',
+    backgroundColor: Colors.black,
+    aspectRatio: 1,
+  ),
+  ShaderInfo(
+    assetKey: 'shaders/breathing_point.frag',
+    name: 'Breathing Point',
+    description: 'A calming shader that simulates breathing.',
+    sourceUrl: 'https://www.shadertoy.com/view/4dXyWN',
+    author: 'User5518',
+    dateAdded: DateTime(2025, 8, 21),
+    builder: const CommonShaderBuilder(),
+    path: 'breathing-point',
     backgroundColor: Colors.black,
     aspectRatio: 1,
   ),

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_shaders/flutter_shaders.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'dart:ui';
 import 'shader_builder.dart';
 
-class AiAssistantShaderBuilder extends CustomShaderBuilder {
-  const AiAssistantShaderBuilder();
+class CommonShaderBuilder extends CustomShaderBuilder {
+  const CommonShaderBuilder();
 
   @override
   bool get requiresImageSampler => false;
@@ -27,11 +29,17 @@ class AiAssistantShaderBuilder extends CustomShaderBuilder {
     double time,
     Widget? child,
   ) {
-    return ClipRect(
-      child: CustomPaint(
-        size: Size.infinite,
-        painter: _AiAssistantShaderPainter(shader),
-      ),
+    return AnimatedSampler(
+      (image, size, canvas) {
+        if (requiresImageSampler) {
+          shader.setImageSampler(0, image);
+        }
+        canvas.drawRect(
+          Rect.fromLTWH(0, 0, size.width, size.height),
+          Paint()..shader = shader,
+        );
+      },
+      child: child ?? const SizedBox.expand(),
     );
   }
 
@@ -39,21 +47,4 @@ class AiAssistantShaderBuilder extends CustomShaderBuilder {
   Widget? childBuilder(BuildContext context) {
     return null;
   }
-}
-
-class _AiAssistantShaderPainter extends CustomPainter {
-  final FragmentShader shader;
-
-  _AiAssistantShaderPainter(this.shader);
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    canvas.drawRect(
-      Rect.fromLTWH(0, 0, size.width, size.height),
-      Paint()..shader = shader,
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }
