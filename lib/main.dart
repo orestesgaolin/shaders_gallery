@@ -35,6 +35,7 @@ class ShaderInfo {
   final String path;
   final EdgeInsetsGeometry? padding;
   final Color? backgroundColor;
+  final double? aspectRatio;
 
   const ShaderInfo({
     required this.name,
@@ -47,6 +48,7 @@ class ShaderInfo {
     required this.path,
     this.padding,
     this.backgroundColor,
+    this.aspectRatio,
   });
 
   ShaderMetadata get metadata => ShaderMetadata(
@@ -108,6 +110,7 @@ final shaders = [
     dateAdded: DateTime(2025, 7, 29),
     builder: const RingsShaderBuilder(),
     path: 'rings-shader',
+    aspectRatio: 1,
   ),
   ShaderInfo(
     name: 'Clearly a Bug',
@@ -130,6 +133,7 @@ final shaders = [
     path: 'ai-assistant',
     padding: EdgeInsets.all(32),
     backgroundColor: Colors.black,
+    aspectRatio: 1,
   ),
 ];
 
