@@ -52,56 +52,62 @@ class _ShaderAnimationViewState extends State<ShaderAnimationView> with SingleTi
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, size) {
-        return AnimatedBuilder(
-          animation: _controller,
-          builder: (context, child) {
-            return ShaderBuilder(
-              assetKey: widget.shaderInfo.assetKey,
-              (context, shader, _) {
-                final duration = widget.shaderInfo.builder.animationDuration;
-                double timeValue;
+    return ColoredBox(
+      color: widget.shaderInfo.backgroundColor ?? Colors.transparent,
+      child: Padding(
+        padding: widget.shaderInfo.padding ?? EdgeInsets.zero,
+        child: LayoutBuilder(
+          builder: (context, size) {
+            return AnimatedBuilder(
+              animation: _controller,
+              builder: (context, child) {
+                return ShaderBuilder(
+                  assetKey: widget.shaderInfo.assetKey,
+                  (context, shader, _) {
+                    final duration = widget.shaderInfo.builder.animationDuration;
+                    double timeValue;
 
-                if (duration != null) {
-                  // Bounded animation - use animated value between 0-1
-                  final animation = TweenSequence<double>([
-                    TweenSequenceItem(
-                      tween: Tween<double>(
-                        begin: 0.0,
-                        end: 1.0,
-                      ).chain(CurveTween(curve: Curves.easeInOut)),
-                      weight: 50.0,
-                    ),
-                    TweenSequenceItem(
-                      tween: Tween<double>(
-                        begin: 1.0,
-                        end: 0.0,
-                      ).chain(CurveTween(curve: Curves.easeInOut)),
-                      weight: 50.0,
-                    ),
-                  ]).animate(_controller);
-                  timeValue = animation.value;
-                } else {
-                  // Unbounded animation - use controller value as continuous time
-                  // Scale the 0-1 controller value to actual time in seconds
-                  timeValue = _controller.value * _controller.duration!.inSeconds;
-                }
+                    if (duration != null) {
+                      // Bounded animation - use animated value between 0-1
+                      final animation = TweenSequence<double>([
+                        TweenSequenceItem(
+                          tween: Tween<double>(
+                            begin: 0.0,
+                            end: 1.0,
+                          ).chain(CurveTween(curve: Curves.easeInOut)),
+                          weight: 50.0,
+                        ),
+                        TweenSequenceItem(
+                          tween: Tween<double>(
+                            begin: 1.0,
+                            end: 0.0,
+                          ).chain(CurveTween(curve: Curves.easeInOut)),
+                          weight: 50.0,
+                        ),
+                      ]).animate(_controller);
+                      timeValue = animation.value;
+                    } else {
+                      // Unbounded animation - use controller value as continuous time
+                      // Scale the 0-1 controller value to actual time in seconds
+                      timeValue = _controller.value * _controller.duration!.inSeconds;
+                    }
 
-                widget.shaderInfo.builder.setUniforms(shader, size.biggest, timeValue);
+                    widget.shaderInfo.builder.setUniforms(shader, size.biggest, timeValue);
 
-                return widget.shaderInfo.builder.buildShader(
-                  widget.shaderInfo.metadata,
-                  shader,
-                  size.biggest,
-                  timeValue,
-                  widget.shaderInfo.builder.childBuilder(context),
+                    return widget.shaderInfo.builder.buildShader(
+                      widget.shaderInfo.metadata,
+                      shader,
+                      size.biggest,
+                      timeValue,
+                      widget.shaderInfo.builder.childBuilder(context),
+                    );
+                  },
                 );
               },
             );
           },
-        );
-      },
+        ),
+      ),
     );
   }
 }

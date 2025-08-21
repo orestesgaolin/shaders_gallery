@@ -16,6 +16,7 @@ import 'noise_shader_builder.dart';
 import 'ntsc_shader_builder.dart';
 import 'rings_shader_builder.dart';
 import 'shader_screen.dart';
+import 'ai_assistant_shader_builder.dart';
 
 void main() {
   usePathUrlStrategy();
@@ -32,6 +33,8 @@ class ShaderInfo {
   final DateTime dateAdded;
   final CustomShaderBuilder builder;
   final String path;
+  final EdgeInsetsGeometry? padding;
+  final Color? backgroundColor;
 
   const ShaderInfo({
     required this.name,
@@ -42,6 +45,8 @@ class ShaderInfo {
     required this.dateAdded,
     required this.builder,
     required this.path,
+    this.padding,
+    this.backgroundColor,
   });
 
   ShaderMetadata get metadata => ShaderMetadata(
@@ -113,6 +118,18 @@ final shaders = [
     dateAdded: DateTime(2025, 7, 29),
     builder: const ClearlyBugShaderBuilder(),
     path: 'clearly-bug-shader',
+  ),
+  ShaderInfo(
+    name: 'AI Assistant',
+    assetKey: 'shaders/ai_assistant.frag',
+    description: 'A rotating effect resembling an AI assistant.',
+    sourceUrl: 'https://www.shadertoy.com/view/MXsyzl',
+    author: 'Saphirah',
+    dateAdded: DateTime(2025, 8, 21),
+    builder: const AiAssistantShaderBuilder(),
+    path: 'ai-assistant',
+    padding: EdgeInsets.all(32),
+    backgroundColor: Colors.black,
   ),
 ];
 
