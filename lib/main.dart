@@ -9,6 +9,7 @@ import 'package:shaders/widgets/widgets.dart';
 import 'package:shaders/meta/meta_tag_manager.dart';
 
 import 'common_shader_builder.dart';
+import 'distorted_motion_shader_builder.dart';
 import 'shader_builder.dart';
 import 'crt_shader_builder.dart';
 import 'noise_overlay_shader_builder.dart';
@@ -159,6 +160,17 @@ final shaders = [
     path: 'breathing-point',
     backgroundColor: Colors.black,
     aspectRatio: 1,
+  ),
+  // glitch.frag
+  ShaderInfo(
+    assetKey: 'shaders/distorted_motion.frag',
+    name: 'Distorted Motion',
+    description: 'Distorts the UI with a blur while scrolling',
+    sourceUrl: 'https://fluttershaders.com/shaders/distorted-motion-blur/',
+    author: '@raoufrahiche',
+    dateAdded: DateTime(2025, 8, 21),
+    builder: const DistortedMotionShaderBuilder(),
+    path: 'distorted-motion',
   ),
 ];
 
