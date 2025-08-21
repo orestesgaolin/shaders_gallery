@@ -32,6 +32,11 @@ class TopMenu extends StatelessWidget {
                   onPressed: () => context.go('/'),
                   child: Icon(Icons.home, size: 20),
                 ),
+                const Spacer(),
+                if (isRunningWithWasm) ...[
+                  const SizedBox(width: 8),
+                  Text('${FlutterVersion.version} (WASM)'),
+                ],
               ],
             ),
           );
