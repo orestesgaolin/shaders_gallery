@@ -125,7 +125,7 @@ final shaders = [
   ),
   ShaderInfo(
     name: 'AI Assistant',
-    assetKey: 'shaders/branded_ai_assistant.frag',
+    assetKey: 'shaders/ai_assistant.frag',
     description: 'A rotating effect resembling an AI assistant.',
     sourceUrl: 'https://www.shadertoy.com/view/MXsyzl',
     author: 'Saphirah',
