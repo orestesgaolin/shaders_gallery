@@ -19,9 +19,9 @@ void main(List<String> args) async {
   final buildArgs = [
     'build',
     'web',
-    '--wasm'
     '--base-href=$baseHref',
     if (isRelease) '--release',
+    '--wasm'
   ];
 
   final buildResult = await Process.run(

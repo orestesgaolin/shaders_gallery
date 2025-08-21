@@ -61,6 +61,9 @@ class TopMenu extends StatelessWidget {
                 ),
               ),
               const Spacer(),
+              if (isRunningWithWasm) ...[
+                Text('(WASM)'),
+              ],
             ],
           ),
         );
@@ -68,3 +71,5 @@ class TopMenu extends StatelessWidget {
     );
   }
 }
+
+const isRunningWithWasm = bool.fromEnvironment('dart.tool.dart2wasm');
