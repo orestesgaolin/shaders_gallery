@@ -17,6 +17,7 @@ import 'ntsc_shader_builder.dart';
 import 'rings_shader_builder.dart';
 import 'shader_screen.dart';
 import 'ai_assistant_shader_builder.dart';
+import 'branded_ai_assistant_shader_builder.dart';
 
 void main() {
   usePathUrlStrategy();
@@ -117,14 +118,14 @@ final shaders = [
     assetKey: 'shaders/clearly_bug_shader.frag',
     description: 'A "Happy Accident" raymarching shader with fractal patterns and beautiful lighting.',
     sourceUrl: 'https://www.shadertoy.com/view/33cGDj',
-    author: 'Various (see comments)',
+    author: 'mrange',
     dateAdded: DateTime(2025, 7, 29),
     builder: const ClearlyBugShaderBuilder(),
     path: 'clearly-bug-shader',
   ),
   ShaderInfo(
     name: 'AI Assistant',
-    assetKey: 'shaders/ai_assistant.frag',
+    assetKey: 'shaders/branded_ai_assistant.frag',
     description: 'A rotating effect resembling an AI assistant.',
     sourceUrl: 'https://www.shadertoy.com/view/MXsyzl',
     author: 'Saphirah',
@@ -132,6 +133,18 @@ final shaders = [
     builder: const AiAssistantShaderBuilder(),
     path: 'ai-assistant',
     padding: EdgeInsets.all(32),
+    backgroundColor: Colors.black,
+    aspectRatio: 1,
+  ),
+  ShaderInfo(
+    assetKey: 'shaders/branded_ai_assistant.frag',
+    name: 'Branded AI Assistant',
+    description: 'Simple scifi ai assistant orb. Use mouse hover to interact.',
+    sourceUrl: 'https://www.shadertoy.com/view/tfcGD8',
+    author: 'Wickone',
+    dateAdded: DateTime(2025, 8, 21),
+    builder: const BrandedAiAssistantShaderBuilder(),
+    path: 'branded-ai-assistant',
     backgroundColor: Colors.black,
     aspectRatio: 1,
   ),

@@ -50,3 +50,4 @@ flutter:
     - shaders/rings_shader.frag
     - shaders/clearly_bug_shader.frag
     - shaders/ai_assistant.frag
+    - shaders/branded_ai_assistant.frag

@@ -55,8 +55,7 @@ float circleMask(float distance){
     return pow(saturate(distance * circleSizeConfigured), 50.0);
 }
 
-void main()
-{
+void main() {
     vec2 fragCoord = FlutterFragCoord().xy;
     // UV Map
     float aspectRatio = iResolution.x / iResolution.y;

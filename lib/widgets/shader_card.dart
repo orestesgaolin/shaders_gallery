@@ -39,7 +39,11 @@ class ShaderCard extends StatelessWidget {
                     TextSpan(
                       children: [
                         TextSpan(text: shaderInfo.description),
-                        TextSpan(text: 'by ${shaderInfo.author}'),
+                        TextSpan(text: ' • '),
+                        TextSpan(
+                          text: shaderInfo.author,
+                          style: ShadTheme.of(context).textTheme.muted,
+                        ),
                       ],
                       style: ShadTheme.of(context).textTheme.muted,
                     ),
