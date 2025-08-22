@@ -103,10 +103,10 @@ class _ShaderWidgetState extends State<_ShaderWidget> with TickerProviderStateMi
               decoration: BoxDecoration(
                 color: index.isEven ? Colors.blue : Colors.red,
                 borderRadius: BorderRadius.circular(8),
-                image: DecorationImage(
-                  image: NetworkImage('https://picsum.photos/id/${index % 5 + _seed}/600/200'),
-                  fit: BoxFit.cover,
-                ),
+                // image: DecorationImage(
+                //   image: NetworkImage('https://picsum.photos/id/${index % 5 + _seed}/600/200'),
+                //   fit: BoxFit.cover,
+                // ),
               ),
               // child: Image.network(
               //   'https://picsum.photos/id/${index % 5 + _seed}/600/200',

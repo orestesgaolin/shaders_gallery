@@ -53,3 +53,4 @@ flutter:
     - shaders/branded_ai_assistant.frag
     - shaders/breathing_point.frag
     - shaders/distorted_motion.frag
+    - shaders/plasma_xor.frag

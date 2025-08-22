@@ -172,7 +172,21 @@ final shaders = [
     builder: const DistortedMotionShaderBuilder(),
     path: 'distorted-motion',
   ),
+  ShaderInfo(
+    assetKey: 'shaders/plasma_xor.frag',
+    name: 'Plasma',
+    description: 'A ball of plasma?',
+    sourceUrl: 'https://www.shadertoy.com/view/WfS3Dd',
+    author: 'xor',
+    dateAdded: DateTime(2025, 8, 22),
+    builder: const CommonShaderBuilder(),
+    path: 'plasma-xor',
+    backgroundColor: Colors.black,
+    aspectRatio: 1,
+  ),
 ];
+
+List<ShaderInfo> sortedShaders = List.from(shaders)..sort((a, b) => b.dateAdded.compareTo(a.dateAdded));
 
 // Helper function to create URL-safe shader names
 String shaderNameToPath(String name) {
@@ -354,9 +368,9 @@ class ContentGrid extends StatelessWidget {
             mainAxisSpacing: 16,
             childAspectRatio: 1,
           ),
-          itemCount: shaders.length,
+          itemCount: sortedShaders.length,
           itemBuilder: (context, index) {
-            final shaderInfo = shaders[index];
+            final shaderInfo = sortedShaders[index];
             return ShaderCard(
               shaderInfo: shaderInfo,
               onTap: () {
