@@ -184,6 +184,18 @@ final shaders = [
     backgroundColor: Colors.black,
     aspectRatio: 1,
   ),
+  ShaderInfo(
+    assetKey: 'shaders/sea.frag',
+    name: 'Seascape',
+    description: 'fully-procedural sea surface computing. without textures. Adapted to Flutter by @reNotANumber',
+    sourceUrl: 'https://www.shadertoy.com/view/Ms2SD1',
+    author: 'TDM, reNotANumber',
+    dateAdded: DateTime(2025, 9, 2),
+    builder: const CommonShaderBuilder(),
+    path: 'sea',
+    backgroundColor: Colors.white,
+    aspectRatio: 1,
+  ),
 ];
 
 List<ShaderInfo> sortedShaders = List.from(shaders)..sort((a, b) => b.dateAdded.compareTo(a.dateAdded));

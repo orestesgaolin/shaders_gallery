@@ -54,3 +54,4 @@ flutter:
     - shaders/breathing_point.frag
     - shaders/distorted_motion.frag
     - shaders/plasma_xor.frag
+    - shaders/sea.frag
