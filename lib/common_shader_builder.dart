@@ -5,7 +5,9 @@ import 'dart:ui';
 import 'shader_builder.dart';
 
 class CommonShaderBuilder extends CustomShaderBuilder {
-  const CommonShaderBuilder();
+  const CommonShaderBuilder({this.enableMouse = false});
+
+  final bool enableMouse;
 
   @override
   bool get requiresImageSampler => false;
@@ -29,7 +31,7 @@ class CommonShaderBuilder extends CustomShaderBuilder {
     double time,
     Widget? child,
   ) {
-    return AnimatedSampler(
+    var animatedSampler = AnimatedSampler(
       (image, size, canvas) {
         if (requiresImageSampler) {
           shader.setImageSampler(0, image);
@@ -41,6 +43,19 @@ class CommonShaderBuilder extends CustomShaderBuilder {
       },
       child: child ?? const SizedBox.expand(),
     );
+    if (enableMouse) {
+      return GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () {},
+        onPanUpdate: (details) {
+          shader
+            ..setFloat(3, details.localPosition.dx)
+            ..setFloat(4, size.height - details.localPosition.dy);
+        },
+        child: animatedSampler,
+      );
+    }
+    return animatedSampler;
   }
 
   @override

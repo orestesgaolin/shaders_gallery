@@ -1,16 +1,17 @@
 #version 460 core
 
-precision highp float;
+precision mediump float;
 
 #include <flutter/runtime_effect.glsl>
 
 uniform vec2 uSize;
 uniform float uTime;
-uniform float uRotation;
+// uniform float uRotation;
+uniform vec2 iMouse;
 
 out vec4 fragColor;
 
-const int NUM_STEPS = 16;
+const int NUM_STEPS = 32;
 const float PI = 3.141592;
 const float EPSILON = 1e-3;
 #define EPSILON_NRM (0.08 / uSize.x)
@@ -220,7 +221,7 @@ vec3 getPixel(in vec2 coord, float time) {
 // }
 
 void main() {
-    float time = -uTime * 0.3;
+    float time = -uTime * 0.3 + iMouse.x*0.01;
     vec2 fragCoord = FlutterFragCoord().xy * vec2(1.0, -1.0) + vec2(0.0, uSize.y);
     vec3 color = getPixel(fragCoord, time);
     fragColor = vec4(pow(color, vec3(0.85)), 1.0);
