@@ -187,7 +187,8 @@ final shaders = [
   ShaderInfo(
     assetKey: 'shaders/sea.frag',
     name: 'Seascape',
-    description: 'fully-procedural sea surface computing. without textures. Try clicking and moving around with your mouse. Adapted to Flutter by @reNotANumber',
+    description:
+        'fully-procedural sea surface computing. without textures. Try clicking and moving around with your mouse. Adapted to Flutter by @reNotANumber',
     sourceUrl: 'https://www.shadertoy.com/view/Ms2SD1',
     author: 'TDM, reNotANumber',
     dateAdded: DateTime(2025, 9, 2),
@@ -195,6 +196,19 @@ final shaders = [
     path: 'sea',
     backgroundColor: Colors.white,
     aspectRatio: 1,
+  ),
+
+  ShaderInfo(
+    assetKey: 'shaders/flutter_xor.frag',
+    name: 'Flutter by XOR',
+    description: '',
+    sourceUrl: 'https://x.com/XorDev/status/1963365613415621101',
+    author: 'xor',
+    dateAdded: DateTime(2025, 9, 4),
+    builder: const CommonShaderBuilder(),
+    path: 'flutter-xor',
+    backgroundColor: Colors.black,
+    aspectRatio: 16/9,
   ),
 ];
 

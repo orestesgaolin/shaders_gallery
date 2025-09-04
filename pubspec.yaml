@@ -55,3 +55,4 @@ flutter:
     - shaders/distorted_motion.frag
     - shaders/plasma_xor.frag
     - shaders/sea.frag
+    - shaders/flutter_xor.frag
