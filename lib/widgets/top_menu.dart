@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class TopMenu extends StatelessWidget {
   const TopMenu({super.key});
@@ -16,7 +17,7 @@ class TopMenu extends StatelessWidget {
 
         if (isCompact) {
           return Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
             decoration: BoxDecoration(
               border: Border(
                 bottom: BorderSide(
@@ -26,6 +27,7 @@ class TopMenu extends StatelessWidget {
               ),
             ),
             child: Row(
+              spacing: 8,
               children: [
                 // Home button
                 ShadButton(
@@ -33,8 +35,16 @@ class TopMenu extends StatelessWidget {
                   child: Icon(Icons.home, size: 20),
                 ),
                 const Spacer(),
+                GestureDetector(
+                  onTap: () {
+                    launchUrl(Uri.parse('https://github.com/orestesgaolin/shaders_gallery'));
+                  },
+                  child: ShadButton.outline(
+                    child: const Icon(Icons.code, size: 20),
+                  ),
+                ),
+                Text(FlutterVersion.version ?? ''),
                 if (isRunningWithWasm) ...[
-                  const SizedBox(width: 8),
                   Text('${FlutterVersion.version} (WASM)'),
                 ],
               ],
@@ -43,7 +53,7 @@ class TopMenu extends StatelessWidget {
         }
 
         return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
           decoration: BoxDecoration(
             border: Border(
               bottom: BorderSide(
@@ -53,25 +63,44 @@ class TopMenu extends StatelessWidget {
             ),
           ),
           child: Row(
+            spacing: 8,
             children: [
               // Home button
               ShadButton(
                 onPressed: () => context.go('/'),
                 child: const Row(
                   mainAxisSize: MainAxisSize.min,
+                  spacing: 8,
                   children: [
                     Icon(Icons.home, size: 20),
-                    SizedBox(width: 8),
                     Text('Shader Gallery'),
                   ],
                 ),
               ),
               const Spacer(),
-              FlutterLogo(size: 14),
-              Text(FlutterVersion.version ?? ''),
-              if (isRunningWithWasm) ...[
-                Text(' WASM'),
-              ],
+              ShadButton.outline(
+                onPressed: () {
+                  launchUrl(Uri.parse('https://github.com/orestesgaolin/shaders_gallery'));
+                },
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  spacing: 8,
+                  children: [
+                    Icon(Icons.code, size: 20),
+                    Text('Source Code'),
+                  ],
+                ),
+              ),
+              Row(
+                spacing: 2,
+                children: [
+                  FlutterLogo(size: 14),
+                  Text(FlutterVersion.version ?? ''),
+                  if (isRunningWithWasm) ...[
+                    Text(' WASM'),
+                  ],
+                ],
+              ),
             ],
           ),
         );
