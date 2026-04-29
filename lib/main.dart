@@ -18,6 +18,7 @@ import 'ntsc_shader_builder.dart';
 import 'rings_shader_builder.dart';
 import 'shader_screen.dart';
 import 'branded_ai_assistant_shader_builder.dart';
+import 'mesh_particles_shader_builder.dart';
 
 void main() {
   usePathUrlStrategy();
@@ -209,6 +210,17 @@ final shaders = [
     path: 'flutter-xor',
     backgroundColor: Colors.black,
     aspectRatio: 16/9,
+  ),
+  ShaderInfo(
+    assetKey: 'shaders/mesh_particles.frag',
+    name: 'Mesh Particles',
+    description: '4096 orbiting particles rendered via drawVertices. Ported from SkiaSharp SKMesh.',
+    sourceUrl: 'https://github.com/nickolay-kofanov/SkiaNative.Avalonia',
+    author: 'nickolay-kofanov',
+    dateAdded: DateTime(2026, 4, 29),
+    builder: const MeshParticlesShaderBuilder(),
+    path: 'mesh-particles',
+    backgroundColor: const Color(0xFF080E18),
   ),
 ];
 
