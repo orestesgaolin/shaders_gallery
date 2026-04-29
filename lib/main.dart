@@ -27,10 +27,14 @@ void main() {
 }
 
 class ShaderInfo {
+  static const String _githubRepoBase =
+      'https://github.com/orestesgaolin/shaders_gallery/tree/main';
+
   final String name;
   final String assetKey;
   final String description;
   final String sourceUrl;
+  final String githubSourcePath;
   final String author;
   final DateTime dateAdded;
   final CustomShaderBuilder builder;
@@ -44,6 +48,7 @@ class ShaderInfo {
     required this.assetKey,
     required this.description,
     required this.sourceUrl,
+    required this.githubSourcePath,
     required this.author,
     required this.dateAdded,
     required this.builder,
@@ -60,6 +65,8 @@ class ShaderInfo {
     author: author,
     dateAdded: dateAdded,
   );
+
+  String get githubSourceUrl => '$_githubRepoBase/$githubSourcePath';
 }
 
 final shaders = [
@@ -68,6 +75,7 @@ final shaders = [
     assetKey: 'shaders/ntsc_shader.frag',
     description: 'An effect that emulates an old NTSC television signal.',
     sourceUrl: 'https://www.shadertoy.com/view/3tVBWR',
+    githubSourcePath: 'lib/ntsc_shader_builder.dart',
     author: 'BitOfGold',
     dateAdded: DateTime(2025, 7, 28),
     builder: const NtscShaderBuilder(),
@@ -78,6 +86,7 @@ final shaders = [
     assetKey: 'shaders/crt_shader.frag',
     description: 'A glitching screen effect',
     sourceUrl: 'https://www.shadertoy.com/view/lt3yz7',
+    githubSourcePath: 'lib/crt_shader_builder.dart',
     author: '@tommclaughlan',
     dateAdded: DateTime(2025, 7, 28),
     builder: const CrtShaderBuilder(),
@@ -88,6 +97,7 @@ final shaders = [
     assetKey: 'shaders/noise_shader.frag',
     description: 'Animated gradient noise with film grain effect',
     sourceUrl: 'https://www.shadertoy.com/view/DdcfzH',
+    githubSourcePath: 'lib/noise_shader_builder.dart',
     author: 'welches',
     dateAdded: DateTime(2025, 7, 28),
     builder: const NoiseShaderBuilder(),
@@ -98,6 +108,7 @@ final shaders = [
     assetKey: 'shaders/noise_overlay_shader.frag',
     description: 'Applies animated noise effect as an overlay on content',
     sourceUrl: 'https://www.shadertoy.com/view/DdcfzH',
+    githubSourcePath: 'lib/noise_overlay_shader_builder.dart',
     path: 'noise-overlay-shader',
     author: 'welches',
     dateAdded: DateTime(2025, 7, 28),
@@ -108,6 +119,7 @@ final shaders = [
     assetKey: 'shaders/rings_shader.frag',
     description: 'Animated rings that respond to touch and mouse interaction. Tap and move around quickly.',
     sourceUrl: 'https://www.shadertoy.com/view/Xtj3DW',
+    githubSourcePath: 'lib/rings_shader_builder.dart',
     author: 'Pol Jeremias',
     dateAdded: DateTime(2025, 7, 29),
     builder: const RingsShaderBuilder(),
@@ -119,6 +131,7 @@ final shaders = [
     assetKey: 'shaders/clearly_bug_shader.frag',
     description: 'A "Happy Accident" raymarching shader with fractal patterns and beautiful lighting.',
     sourceUrl: 'https://www.shadertoy.com/view/33cGDj',
+    githubSourcePath: 'lib/common_shader_builder.dart',
     author: 'mrange',
     dateAdded: DateTime(2025, 7, 29),
     builder: const CommonShaderBuilder(),
@@ -130,6 +143,7 @@ final shaders = [
     assetKey: 'shaders/ai_assistant.frag',
     description: 'A rotating effect resembling an AI assistant.',
     sourceUrl: 'https://www.shadertoy.com/view/MXsyzl',
+    githubSourcePath: 'lib/common_shader_builder.dart',
     author: 'Saphirah',
     dateAdded: DateTime(2025, 8, 21),
     builder: const CommonShaderBuilder(),
@@ -143,6 +157,7 @@ final shaders = [
     name: 'Branded AI Assistant',
     description: 'Simple scifi ai assistant orb. Use mouse hover to interact.',
     sourceUrl: 'https://www.shadertoy.com/view/tfcGD8',
+    githubSourcePath: 'lib/branded_ai_assistant_shader_builder.dart',
     author: 'Wickone',
     dateAdded: DateTime(2025, 8, 21),
     builder: const BrandedAiAssistantShaderBuilder(),
@@ -155,6 +170,7 @@ final shaders = [
     name: 'Breathing Point',
     description: 'A calming shader that simulates breathing.',
     sourceUrl: 'https://www.shadertoy.com/view/4dXyWN',
+    githubSourcePath: 'lib/common_shader_builder.dart',
     author: 'User5518',
     dateAdded: DateTime(2025, 8, 21),
     builder: const CommonShaderBuilder(),
@@ -168,6 +184,7 @@ final shaders = [
     name: 'Distorted Motion',
     description: 'Distorts the UI with a blur while scrolling',
     sourceUrl: 'https://fluttershaders.com/shaders/distorted-motion-blur/',
+    githubSourcePath: 'lib/distorted_motion_shader_builder.dart',
     author: '@raoufrahiche',
     dateAdded: DateTime(2025, 8, 21),
     builder: const DistortedMotionShaderBuilder(),
@@ -178,6 +195,7 @@ final shaders = [
     name: 'Plasma',
     description: 'A ball of plasma?',
     sourceUrl: 'https://www.shadertoy.com/view/WfS3Dd',
+    githubSourcePath: 'lib/common_shader_builder.dart',
     author: 'xor',
     dateAdded: DateTime(2025, 8, 22),
     builder: const CommonShaderBuilder(),
@@ -191,6 +209,7 @@ final shaders = [
     description:
         'fully-procedural sea surface computing. without textures. Try clicking and moving around with your mouse. Adapted to Flutter by @reNotANumber',
     sourceUrl: 'https://www.shadertoy.com/view/Ms2SD1',
+    githubSourcePath: 'lib/common_shader_builder.dart',
     author: 'TDM, reNotANumber',
     dateAdded: DateTime(2025, 9, 2),
     builder: const CommonShaderBuilder(enableMouse: true),
@@ -204,6 +223,7 @@ final shaders = [
     name: 'Flutter by XOR',
     description: '',
     sourceUrl: 'https://x.com/XorDev/status/1963365613415621101',
+    githubSourcePath: 'lib/common_shader_builder.dart',
     author: 'xor',
     dateAdded: DateTime(2025, 9, 4),
     builder: const CommonShaderBuilder(),
@@ -215,8 +235,9 @@ final shaders = [
     assetKey: 'shaders/mesh_particles.frag',
     name: 'Mesh Particles',
     description: '4096 orbiting particles rendered via drawVertices. Ported from SkiaSharp SKMesh.',
-    sourceUrl: 'https://github.com/nickolay-kofanov/SkiaNative.Avalonia',
-    author: 'nickolay-kofanov',
+    sourceUrl: 'https://github.com/wieslawsoltes/SkiaNative.Avalonia/blob/main/samples/MeshParticles.SkiaSharp.Uno/MeshParticles.SkiaSharp.Uno/Controls/MeshParticlesSurface.cs',
+    githubSourcePath: 'lib/mesh_particles_shader_builder.dart',
+    author: 'wieslawsoltes',
     dateAdded: DateTime(2026, 4, 29),
     builder: const MeshParticlesShaderBuilder(),
     path: 'mesh-particles',

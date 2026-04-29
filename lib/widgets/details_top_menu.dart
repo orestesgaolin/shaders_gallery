@@ -22,9 +22,19 @@ class DetailsTopMenu extends StatelessWidget {
             children: [
               ShadButton(
                 onPressed: () => context.go('/'),
-                child: Icon(Icons.arrow_back, size: 20),
+                child: const Icon(Icons.arrow_back, size: 20),
               ),
-              Spacer(),
+              const Spacer(),
+              ShadButton.outline(
+                onPressed: () async {
+                  final url = Uri.parse(shaderInfo.githubSourceUrl);
+                  if (await canLaunchUrl(url)) {
+                    await launchUrl(url);
+                  }
+                },
+                child: const Icon(Icons.code, size: 16),
+              ),
+              const SizedBox(width: 8),
               ShadButton(
                 onPressed: () async {
                   final url = Uri.parse(shaderInfo.sourceUrl);
@@ -32,7 +42,7 @@ class DetailsTopMenu extends StatelessWidget {
                     await launchUrl(url);
                   }
                 },
-                child: Icon(Icons.code, size: 16),
+                child: const Icon(Icons.link, size: 16),
               ),
             ],
           );
@@ -63,6 +73,23 @@ class DetailsTopMenu extends StatelessWidget {
             // Actions
             Row(
               children: [
+                ShadButton.outline(
+                  onPressed: () async {
+                    final url = Uri.parse(shaderInfo.githubSourceUrl);
+                    if (await canLaunchUrl(url)) {
+                      await launchUrl(url);
+                    }
+                  },
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.code, size: 16),
+                      SizedBox(width: 8),
+                      Text('View Flutter Code'),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 8),
                 ShadButton.outline(
                   onPressed: () async {
                     final url = Uri.parse(shaderInfo.sourceUrl);
