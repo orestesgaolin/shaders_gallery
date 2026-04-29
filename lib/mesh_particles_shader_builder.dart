@@ -17,10 +17,8 @@ class MeshParticlesShaderBuilder extends CustomShaderBuilder {
 
   @override
   void setUniforms(FragmentShader shader, Size size, double time) {
-    shader
-      ..setFloat(0, size.width)
-      ..setFloat(1, size.height)
-      ..setFloat(2, time);
+    // No-op: the dummy shader's uniforms may be optimized away by the web
+    // compiler, so calling setFloat would write out of bounds on Skwasm.
   }
 
   @override
@@ -68,8 +66,6 @@ class _MeshParticlesPainter extends CustomPainter {
   );
 
   static final Uint16List _batchIdx = _buildBatchIndices(_batchSize);
-  static final Float32List _pos = Float32List(_batchSize * _vpp * 2);
-  static final Int32List _col = Int32List(_batchSize * _vpp);
 
   static bool _initialized = false;
 
@@ -132,6 +128,11 @@ class _MeshParticlesPainter extends CustomPainter {
     for (var batch = 0; batch < particleCount; batch += _batchSize) {
       final batchEnd = min(batch + _batchSize, particleCount);
       final count = batchEnd - batch;
+
+      // Fresh arrays per batch — Skwasm reads lazily from the backing buffer,
+      // so reusing a shared buffer across batches corrupts earlier draws.
+      final pos = Float32List(count * _vpp * 2);
+      final col = Int32List(count * _vpp);
       var vi = 0;
       var pidx = 0;
 
@@ -159,35 +160,45 @@ class _MeshParticlesPainter extends CustomPainter {
         final coreA = (vAlpha * (1.07 + sparkle * 0.08)).clamp(0.0, 1.0);
         final ringA = (vAlpha * (0.72 + sparkle * 0.08)).clamp(0.0, 1.0);
 
-        final rgb = _hsv2rgb(_pHue[p] + t * 0.015, 0.76, 1.0);
-        final r = rgb[0], g = rgb[1], b = rgb[2];
-        final centerColor = _packArgb(r, g, b, coreA);
-        final innerColor = _packArgb(r, g, b, ringA);
+        final hue = (_pHue[p] + t * 0.015) % 1.0;
+        final c = 0.76;
+        final x = c * (1.0 - ((hue * 6.0) % 2.0 - 1.0).abs());
+        final m = 1.0 - c;
+        double cr, cg, cb;
+        switch ((hue * 6.0).floor() % 6) {
+          case 0:  cr = c + m; cg = x + m; cb = m;
+          case 1:  cr = x + m; cg = c + m; cb = m;
+          case 2:  cr = m; cg = c + m; cb = x + m;
+          case 3:  cr = m; cg = x + m; cb = c + m;
+          case 4:  cr = x + m; cg = m; cb = c + m;
+          default: cr = c + m; cg = m; cb = x + m;
+        }
 
-        _pos[pidx++] = pcx;
-        _pos[pidx++] = pcy;
-        _col[vi++] = centerColor;
+        final centerColor = _packArgb(cr, cg, cb, coreA);
+        final innerColor = _packArgb(cr, cg, cb, ringA);
+
+        pos[pidx++] = pcx;
+        pos[pidx++] = pcy;
+        col[vi++] = centerColor;
 
         final innerSz = sz * _innerR;
         for (var s = 0; s < _seg; s++) {
-          _pos[pidx++] = pcx + _sCos[s] * innerSz;
-          _pos[pidx++] = pcy + _sSin[s] * innerSz;
-          _col[vi++] = innerColor;
+          pos[pidx++] = pcx + _sCos[s] * innerSz;
+          pos[pidx++] = pcy + _sSin[s] * innerSz;
+          col[vi++] = innerColor;
         }
         for (var s = 0; s < _seg; s++) {
-          _pos[pidx++] = pcx + _sCos[s] * sz;
-          _pos[pidx++] = pcy + _sSin[s] * sz;
-          _col[vi++] = 0;
+          pos[pidx++] = pcx + _sCos[s] * sz;
+          pos[pidx++] = pcy + _sSin[s] * sz;
+          col[vi++] = 0;
         }
       }
 
-      final vertCount = count * _vpp;
       final idxCount = count * _ipp;
-
       final vertices = ui.Vertices.raw(
         VertexMode.triangles,
-        Float32List.sublistView(_pos, 0, vertCount * 2),
-        colors: Int32List.sublistView(_col, 0, vertCount),
+        pos,
+        colors: col,
         indices: count == _batchSize
             ? _batchIdx
             : Uint16List.sublistView(_batchIdx, 0, idxCount),
@@ -220,31 +231,6 @@ class _MeshParticlesPainter extends CustomPainter {
       Rect.fromLTWH(0.5, 0.5, size.width - 1, size.height - 1),
       borderPaint,
     );
-  }
-
-  static final Float64List _rgbBuf = Float64List(3);
-
-  static Float64List _hsv2rgb(double h, double s, double v) {
-    h = h % 1.0;
-    if (h < 0) h += 1.0;
-    final c = v * s;
-    final x = c * (1.0 - ((h * 6.0) % 2.0 - 1.0).abs());
-    final m = v - c;
-    switch ((h * 6.0).floor() % 6) {
-      case 0:
-        _rgbBuf[0] = c + m; _rgbBuf[1] = x + m; _rgbBuf[2] = m;
-      case 1:
-        _rgbBuf[0] = x + m; _rgbBuf[1] = c + m; _rgbBuf[2] = m;
-      case 2:
-        _rgbBuf[0] = m; _rgbBuf[1] = c + m; _rgbBuf[2] = x + m;
-      case 3:
-        _rgbBuf[0] = m; _rgbBuf[1] = x + m; _rgbBuf[2] = c + m;
-      case 4:
-        _rgbBuf[0] = x + m; _rgbBuf[1] = m; _rgbBuf[2] = c + m;
-      default:
-        _rgbBuf[0] = c + m; _rgbBuf[1] = m; _rgbBuf[2] = x + m;
-    }
-    return _rgbBuf;
   }
 
   static int _packArgb(double r, double g, double b, double a) {
