@@ -19,6 +19,8 @@ import 'rings_shader_builder.dart';
 import 'shader_screen.dart';
 import 'branded_ai_assistant_shader_builder.dart';
 import 'mesh_particles_shader_builder.dart';
+import 'paper_texture_shader_builder.dart';
+import 'halftone_cmyk_shader_builder.dart';
 
 void main() {
   usePathUrlStrategy();
@@ -70,6 +72,30 @@ class ShaderInfo {
 }
 
 final shaders = [
+  ShaderInfo(
+    name: 'Paper Texture',
+    assetKey: 'shaders/paper_texture.frag',
+    description: 'Realistic paper surface built from fiber, crumple, fold and speckle noise layers. '
+        'Ported from paper.design shaders.',
+    sourceUrl: 'https://shaders.paper.design/?shader=paper-texture',
+    githubSourcePath: 'lib/paper_texture_shader_builder.dart',
+    author: 'paper.design',
+    dateAdded: DateTime(2026, 7, 2),
+    builder: const PaperTextureShaderBuilder(),
+    path: 'paper-texture',
+  ),
+  ShaderInfo(
+    name: 'Halftone CMYK',
+    assetKey: 'shaders/halftone_cmyk.frag',
+    description: 'CMYK halftone printing effect with rotated screen angles per ink channel, '
+        'applied to live Flutter content. Ported from paper.design shaders.',
+    sourceUrl: 'https://shaders.paper.design/?shader=halftone-cmyk',
+    githubSourcePath: 'lib/halftone_cmyk_shader_builder.dart',
+    author: 'paper.design',
+    dateAdded: DateTime(2026, 7, 2),
+    builder: const HalftoneCmykShaderBuilder(),
+    path: 'halftone-cmyk',
+  ),
   ShaderInfo(
     name: 'NTSC filter',
     assetKey: 'shaders/ntsc_shader.frag',
