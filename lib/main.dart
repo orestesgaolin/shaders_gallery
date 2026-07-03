@@ -94,7 +94,7 @@ final shaders = [
     githubSourcePath: 'lib/paper_image_filter_shader_builder.dart',
     author: 'paper.design',
     dateAdded: DateTime(2026, 7, 3),
-    builder: const PaperImageFilterShaderBuilder(),
+    builder: const PaperImageFilterShaderBuilder(continuous: true),
     path: 'water',
   ),
   ShaderInfo(

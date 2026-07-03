@@ -13,7 +13,17 @@ import 'shader_builder.dart';
 /// This avoids re-rasterizing a widget subtree with AnimatedSampler on every
 /// frame, keeping the per-frame cost to a single fullscreen quad.
 class PaperImageFilterShaderBuilder extends CustomShaderBuilder {
-  const PaperImageFilterShaderBuilder();
+  const PaperImageFilterShaderBuilder({this.continuous = false});
+
+  /// Whether the shader animates every frame (water) or only changes at
+  /// dither-type boundaries and during image crossfades (dithering). For
+  /// non-continuous shaders the time uniform is held between visual changes
+  /// so the painter skips repainting frames that would look identical.
+  final bool continuous;
+
+  static const _typeCycleSeconds = 3.0;
+  static const _imageCycleSeconds = 6.0;
+  static const _imageFadeSeconds = 0.7;
 
   /// The shaders hardcode 3 samplers and IMAGE_CYCLE_SECONDS = 6; keep this
   /// list length and the cycle in sync with them.
@@ -56,12 +66,25 @@ class PaperImageFilterShaderBuilder extends CustomShaderBuilder {
   @override
   Duration? get animationDuration => null; // Unbounded animation
 
+  /// Time quantized to the last visual change: continuous during the fade
+  /// window, otherwise held at the last dither-type boundary.
+  double _effectiveTime(double time) {
+    if (continuous) {
+      return time;
+    }
+    final cyclePos = time % _imageCycleSeconds;
+    if (cyclePos > _imageCycleSeconds - _imageFadeSeconds - 0.05) {
+      return time;
+    }
+    return (time / _typeCycleSeconds).floorToDouble() * _typeCycleSeconds;
+  }
+
   @override
   void setUniforms(ui.FragmentShader shader, Size size, double time) {
     shader
       ..setFloat(0, size.width)
       ..setFloat(1, size.height)
-      ..setFloat(2, time);
+      ..setFloat(2, _effectiveTime(time));
   }
 
   @override
@@ -90,15 +113,10 @@ class PaperImageFilterShaderBuilder extends CustomShaderBuilder {
   }
 
   Widget _paint(ui.FragmentShader shader, double time, List<ui.Image> images) {
-    // All images stay bound on fixed samplers; the shader rotates between
-    // them based on iTime, so no binding ever changes mid-animation
-    for (var i = 0; i < images.length; i++) {
-      shader
-        ..setFloat(3 + i, images[i].width / images[i].height)
-        ..setImageSampler(i, images[i]);
-    }
     return SizedBox.expand(
-      child: CustomPaint(painter: _ShaderQuadPainter(shader, time)),
+      child: CustomPaint(
+        painter: _ShaderQuadPainter(shader, _effectiveTime(time), images),
+      ),
     );
   }
 
@@ -107,13 +125,24 @@ class PaperImageFilterShaderBuilder extends CustomShaderBuilder {
 }
 
 class _ShaderQuadPainter extends CustomPainter {
-  _ShaderQuadPainter(this.shader, this.time);
+  _ShaderQuadPainter(this.shader, this.time, this.images);
 
   final ui.FragmentShader shader;
   final double time;
+  final List<ui.Image> images;
 
   @override
   void paint(Canvas canvas, Size size) {
+    // Samplers are (re)bound here rather than at build time: paint runs only
+    // when the effective time actually changed (shouldRepaint below), so the
+    // per-frame sampler-wrapper garbage that caused GC frame drops is gone,
+    // while every real repaint still gets fresh bindings — required on the
+    // web engine, where bindings don't reliably survive across frames.
+    for (var i = 0; i < images.length; i++) {
+      shader
+        ..setFloat(3 + i, images[i].width / images[i].height)
+        ..setImageSampler(i, images[i]);
+    }
     canvas.drawRect(Offset.zero & size, Paint()..shader = shader);
   }
 
