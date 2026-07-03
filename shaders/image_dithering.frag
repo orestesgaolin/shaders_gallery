@@ -16,8 +16,10 @@ uniform vec2 iResolution;
 uniform float iTime;
 uniform float iImageAspect;
 uniform float iImage2Aspect;
+uniform float iImage3Aspect;
 uniform sampler2D u_image;
 uniform sampler2D u_image2;
+uniform sampler2D u_image3;
 
 out vec4 fragColor;
 
@@ -40,14 +42,19 @@ vec2 coverUV(vec2 uv, float canvasAspect, float imageAspect) {
   return (uv - .5) * scale + .5;
 }
 
-// The current and next image are bound as two samplers; the crossfade
-// happens here in the shader instead of re-rasterizing a widget every frame
+// All images stay bound and are sampled every frame so their GPU textures
+// never go cold; rebinding a texture mid-animation causes a frame drop.
+// The rotation and crossfade are pure uniform math on iTime.
 vec4 sampleImages(vec2 uv, float canvasAspect) {
   float cyclePos = mod(iTime, IMAGE_CYCLE_SECONDS);
+  float slot = mod(floor(iTime / IMAGE_CYCLE_SECONDS), 3.0);
   float fade = smoothstep(IMAGE_CYCLE_SECONDS - IMAGE_FADE_SECONDS, IMAGE_CYCLE_SECONDS, cyclePos);
   vec4 img1 = texture(u_image, coverUV(uv, canvasAspect, iImageAspect));
   vec4 img2 = texture(u_image2, coverUV(uv, canvasAspect, iImage2Aspect));
-  return mix(img1, img2, fade);
+  vec4 img3 = texture(u_image3, coverUV(uv, canvasAspect, iImage3Aspect));
+  vec4 current = (slot < .5) ? img1 : ((slot < 1.5) ? img2 : img3);
+  vec4 next = (slot < .5) ? img2 : ((slot < 1.5) ? img3 : img1);
+  return mix(current, next, fade);
 }
 
 float hash21(vec2 p) {

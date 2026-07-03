@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -14,9 +15,8 @@ import 'shader_builder.dart';
 class PaperImageFilterShaderBuilder extends CustomShaderBuilder {
   const PaperImageFilterShaderBuilder();
 
-  /// Must match IMAGE_CYCLE_SECONDS in the shaders.
-  static const _cycleSeconds = 6.0;
-
+  /// The shaders hardcode 3 samplers and IMAGE_CYCLE_SECONDS = 6; keep this
+  /// list length and the cycle in sync with them.
   static const _assetKeys = [
     'assets/images/starry_night.jpg',
     'assets/images/pearl_earring.jpg',
@@ -32,7 +32,22 @@ class PaperImageFilterShaderBuilder extends CustomShaderBuilder {
     final descriptor = await ui.ImageDescriptor.encoded(buffer);
     final codec = await descriptor.instantiateCodec();
     final frame = await codec.getNextFrame();
-    return frame.image;
+    final image = frame.image;
+    // Convert to raw pixels so the engine can never lazily re-decode the
+    // JPEG mid-animation (a source of frame drops, especially on web)
+    final byteData = await image.toByteData(format: ui.ImageByteFormat.rawRgba);
+    if (byteData == null) {
+      return image;
+    }
+    final completer = Completer<ui.Image>();
+    ui.decodeImageFromPixels(
+      byteData.buffer.asUint8List(),
+      image.width,
+      image.height,
+      ui.PixelFormat.rgba8888,
+      completer.complete,
+    );
+    return completer.future;
   }
 
   @override
@@ -75,14 +90,13 @@ class PaperImageFilterShaderBuilder extends CustomShaderBuilder {
   }
 
   Widget _paint(ui.FragmentShader shader, double time, List<ui.Image> images) {
-    final index = (time / _cycleSeconds).floor() % images.length;
-    final current = images[index];
-    final upcoming = images[(index + 1) % images.length];
-    shader
-      ..setFloat(3, current.width / current.height)
-      ..setFloat(4, upcoming.width / upcoming.height)
-      ..setImageSampler(0, current)
-      ..setImageSampler(1, upcoming);
+    // All images stay bound on fixed samplers; the shader rotates between
+    // them based on iTime, so no binding ever changes mid-animation
+    for (var i = 0; i < images.length; i++) {
+      shader
+        ..setFloat(3 + i, images[i].width / images[i].height)
+        ..setImageSampler(i, images[i]);
+    }
     return SizedBox.expand(
       child: CustomPaint(painter: _ShaderQuadPainter(shader, time)),
     );
