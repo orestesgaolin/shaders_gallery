@@ -1,26 +1,48 @@
-import 'dart:ui';
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
-import 'package:flutter_shaders/flutter_shaders.dart';
+import 'package:flutter/services.dart';
 
 import 'shader_builder.dart';
-import 'widgets/cycling_image_content.dart';
 
 /// Builder for paper.design image-filter shaders (Image Dithering, Water).
-/// Feeds a cycling set of images to the shader via [AnimatedSampler] and sets
-/// the standard resolution + time uniforms.
+///
+/// Decodes a set of images once and binds the current and next one directly
+/// as shader textures; the cover-fit and crossfade happen inside the shader.
+/// This avoids re-rasterizing a widget subtree with AnimatedSampler on every
+/// frame, keeping the per-frame cost to a single fullscreen quad.
 class PaperImageFilterShaderBuilder extends CustomShaderBuilder {
-  const PaperImageFilterShaderBuilder({
-    this.imageInterval = const Duration(seconds: 6),
-  });
+  const PaperImageFilterShaderBuilder();
 
-  final Duration imageInterval;
+  /// Must match IMAGE_CYCLE_SECONDS in the shaders.
+  static const _cycleSeconds = 6.0;
+
+  static const _assetKeys = [
+    'assets/images/starry_night.jpg',
+    'assets/images/pearl_earring.jpg',
+    'assets/images/great_wave.jpg',
+  ];
+
+  static List<ui.Image>? _images;
+  static Future<List<ui.Image>>? _future;
+
+  static Future<ui.Image> _decode(String key) async {
+    final data = await rootBundle.load(key);
+    final buffer = await ui.ImmutableBuffer.fromUint8List(data.buffer.asUint8List());
+    final descriptor = await ui.ImageDescriptor.encoded(buffer);
+    final codec = await descriptor.instantiateCodec();
+    final frame = await codec.getNextFrame();
+    return frame.image;
+  }
+
+  @override
+  bool get requiresImageSampler => false;
 
   @override
   Duration? get animationDuration => null; // Unbounded animation
 
   @override
-  void setUniforms(FragmentShader shader, Size size, double time) {
+  void setUniforms(ui.FragmentShader shader, Size size, double time) {
     shader
       ..setFloat(0, size.width)
       ..setFloat(1, size.height)
@@ -30,23 +52,57 @@ class PaperImageFilterShaderBuilder extends CustomShaderBuilder {
   @override
   Widget buildShader(
     ShaderMetadata metadata,
-    FragmentShader shader,
+    ui.FragmentShader shader,
     Size size,
     double time,
     Widget? child,
   ) {
-    return AnimatedSampler(
-      (image, size, canvas) {
-        shader.setImageSampler(0, image);
-        canvas.drawRect(
-          Rect.fromLTWH(0, 0, size.width, size.height),
-          Paint()..shader = shader,
-        );
-      },
-      child: child ?? const SizedBox.expand(),
+    final images = _images;
+    if (images == null) {
+      _future ??= Future.wait(_assetKeys.map(_decode)).then((list) => _images = list);
+      return FutureBuilder<List<ui.Image>>(
+        future: _future,
+        builder: (context, snapshot) {
+          final loaded = snapshot.data;
+          if (loaded == null) {
+            return const SizedBox.expand();
+          }
+          return _paint(shader, time, loaded);
+        },
+      );
+    }
+    return _paint(shader, time, images);
+  }
+
+  Widget _paint(ui.FragmentShader shader, double time, List<ui.Image> images) {
+    final index = (time / _cycleSeconds).floor() % images.length;
+    final current = images[index];
+    final upcoming = images[(index + 1) % images.length];
+    shader
+      ..setFloat(3, current.width / current.height)
+      ..setFloat(4, upcoming.width / upcoming.height)
+      ..setImageSampler(0, current)
+      ..setImageSampler(1, upcoming);
+    return SizedBox.expand(
+      child: CustomPaint(painter: _ShaderQuadPainter(shader, time)),
     );
   }
 
   @override
-  Widget? childBuilder(BuildContext context) => CyclingImageContent(interval: imageInterval);
+  Widget? childBuilder(BuildContext context) => null;
+}
+
+class _ShaderQuadPainter extends CustomPainter {
+  _ShaderQuadPainter(this.shader, this.time);
+
+  final ui.FragmentShader shader;
+  final double time;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    canvas.drawRect(Offset.zero & size, Paint()..shader = shader);
+  }
+
+  @override
+  bool shouldRepaint(_ShaderQuadPainter oldDelegate) => oldDelegate.time != time;
 }

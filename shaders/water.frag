@@ -11,7 +11,10 @@ precision mediump float;
 
 uniform vec2 iResolution;
 uniform float iTime;
+uniform float iImageAspect;
+uniform float iImage2Aspect;
 uniform sampler2D u_image;
+uniform sampler2D u_image2;
 
 out vec4 fragColor;
 
@@ -23,6 +26,26 @@ const float EDGES = 0.8;
 const float WAVES = 0.3;
 const float CAUSTIC = 0.1;
 const float SIZE = 1.0;
+const float IMAGE_CYCLE_SECONDS = 6.0;
+const float IMAGE_FADE_SECONDS = 0.7;
+
+// Maps canvas UV to image UV so the image covers the canvas (BoxFit.cover)
+vec2 coverUV(vec2 uv, float canvasAspect, float imageAspect) {
+  vec2 scale = (canvasAspect > imageAspect)
+    ? vec2(1.0, imageAspect / canvasAspect)
+    : vec2(canvasAspect / imageAspect, 1.0);
+  return (uv - .5) * scale + .5;
+}
+
+// The current and next image are bound as two samplers; the crossfade
+// happens here in the shader instead of re-rasterizing a widget every frame
+vec4 sampleImages(vec2 uv, float canvasAspect) {
+  float cyclePos = mod(iTime, IMAGE_CYCLE_SECONDS);
+  float fade = smoothstep(IMAGE_CYCLE_SECONDS - IMAGE_FADE_SECONDS, IMAGE_CYCLE_SECONDS, cyclePos);
+  vec4 img1 = texture(u_image, coverUV(uv, canvasAspect, iImageAspect));
+  vec4 img2 = texture(u_image2, coverUV(uv, canvasAspect, iImage2Aspect));
+  return mix(img1, img2, fade);
+}
 
 #define TWO_PI 6.28318530718
 #define PI 3.14159265358979323846
@@ -122,7 +145,7 @@ void main() {
 
   float frame = getUvFrame(imageUV);
 
-  vec4 image = texture(u_image, imageUV);
+  vec4 image = sampleImages(imageUV, aspect);
   vec4 backColor = COLOR_BACK;
   backColor.rgb *= backColor.a;
 
