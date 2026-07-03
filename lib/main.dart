@@ -21,6 +21,7 @@ import 'branded_ai_assistant_shader_builder.dart';
 import 'mesh_particles_shader_builder.dart';
 import 'paper_texture_shader_builder.dart';
 import 'halftone_cmyk_shader_builder.dart';
+import 'paper_image_filter_shader_builder.dart';
 
 void main() {
   usePathUrlStrategy();
@@ -72,6 +73,30 @@ class ShaderInfo {
 }
 
 final shaders = [
+  ShaderInfo(
+    name: 'Image Dithering',
+    assetKey: 'shaders/image_dithering.frag',
+    description: 'Dithering image filter cycling through random, 2x2, 4x4 and 8x8 Bayer modes '
+        'over a rotating set of public-domain artworks. Ported from paper.design shaders.',
+    sourceUrl: 'https://shaders.paper.design/?shader=image-dithering',
+    githubSourcePath: 'lib/paper_image_filter_shader_builder.dart',
+    author: 'paper.design',
+    dateAdded: DateTime(2026, 7, 3),
+    builder: const PaperImageFilterShaderBuilder(),
+    path: 'image-dithering',
+  ),
+  ShaderInfo(
+    name: 'Water',
+    assetKey: 'shaders/water.frag',
+    description: 'Water-like surface distortion with caustic highlights, rippling over a rotating '
+        'set of public-domain artworks. Ported from paper.design shaders.',
+    sourceUrl: 'https://shaders.paper.design/?shader=water',
+    githubSourcePath: 'lib/paper_image_filter_shader_builder.dart',
+    author: 'paper.design',
+    dateAdded: DateTime(2026, 7, 3),
+    builder: const PaperImageFilterShaderBuilder(imageInterval: Duration(seconds: 8)),
+    path: 'water',
+  ),
   ShaderInfo(
     name: 'Paper Texture',
     assetKey: 'shaders/paper_texture.frag',

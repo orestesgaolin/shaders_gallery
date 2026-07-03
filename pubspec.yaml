@@ -42,6 +42,7 @@ flutter:
     - assets/shaders_text/
     - assets/screenshots/
     - assets/textures/
+    - assets/images/
 
   shaders:
     - shaders/crt_shader.frag
@@ -60,3 +61,5 @@ flutter:
     - shaders/mesh_particles.frag
     - shaders/paper_texture.frag
     - shaders/halftone_cmyk.frag
+    - shaders/image_dithering.frag
+    - shaders/water.frag
